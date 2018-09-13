@@ -20,8 +20,8 @@ int main() {
 
 
     // TODO: load something into memory here
-    state.a = 0xF0;
-    state.memory[0xCD] = 0x0F; // zero page
+    state.a = 0xFA;
+    state.memory[0xCD] = 0x03; // zero page
 
     // program
     state.memory[0x00] = 0x25;
@@ -33,9 +33,7 @@ int main() {
 
     int run_state = 0;
     while (run_state == 0) {
-        // After retrieving the opcode, the program counter will automatically increment by 1.
-        byte opcode = state.memory[state.program_counter++];
-        state.cycles++;  // Also increment the cycle counter
+        byte opcode = read_memory(&state, state.program_counter++);
         run_state = run_opcode(opcode, &state);
 
         // if (state.cycle_counter <= 0) {
@@ -47,9 +45,12 @@ int main() {
         // }
     }
 
+    // TODO: remove later
     printf("accumulator = %02X\n", state.a);
     printf("negative = %d\n", state.negative);
     printf("zero = %d\n", state.zero);
+    printf("program_counter = %02X\n", state.program_counter);
+    printf("cycles = %lu\n", state.cycles);
 
     free(state.memory);
     return 0;

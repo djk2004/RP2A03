@@ -16,5 +16,6 @@ struct State {
 };
 
 int run_opcode(byte opcode, struct State* state);
+byte read_memory(struct State* state, unsigned short address);
 
 #endif

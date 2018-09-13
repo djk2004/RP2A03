@@ -7,14 +7,12 @@ int unimplemented(struct State *state) {
 }
 
 byte zero_page_read(struct State *state) {
-    byte lowBytes = state->memory[state->program_counter++];
-    state->cycles++;
-    byte value = state->memory[lowBytes];
-    state->cycles++;
+    byte low_bytes = read_memory(state, state->program_counter++);
+    byte value = read_memory(state, low_bytes);
     return value;
 }
 
-int and_zero_page(struct State *state) {
+int and_zero_page_25(struct State *state) {
     byte value = zero_page_read(state);
     state->a &= value;
     state->negative = (state->a & 128) >> 7;
@@ -22,7 +20,7 @@ int and_zero_page(struct State *state) {
     return 0;
 }
 
-int lda_zero_page(struct State *state) {
+int lda_zero_page_A5(struct State *state) {
     byte value = zero_page_read(state);
     state->a = value;
     state->negative = (state->a & 128) >> 7;
@@ -68,7 +66,7 @@ int (*opcodes[])(struct State*) = {
     unimplemented,   // opcode 22
     unimplemented,   // opcode 23
     unimplemented,   // opcode 24
-    and_zero_page,   // opcode 25
+    and_zero_page_25,
     unimplemented,   // opcode 26
     unimplemented,   // opcode 27
     unimplemented,   // opcode 28
@@ -196,7 +194,7 @@ int (*opcodes[])(struct State*) = {
     unimplemented,   // opcode A2
     unimplemented,   // opcode A3
     unimplemented,   // opcode A4
-    lda_zero_page,   // opcode A5
+    lda_zero_page_A5,
     unimplemented,   // opcode A6
     unimplemented,   // opcode A7
     unimplemented,   // opcode A8
@@ -291,4 +289,10 @@ int (*opcodes[])(struct State*) = {
 
 int run_opcode(byte opcode, struct State* state) {
     return opcodes[opcode](state);
+}
+
+byte read_memory(struct State* state, unsigned short address) {
+    byte value = state->memory[address];
+    state->cycles++;
+    return value;
 }
