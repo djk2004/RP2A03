@@ -1,5 +1,5 @@
-#ifndef PROCESSOR_H
-#define PROCESSOR_H
+#ifndef OPCODES_H
+#define OPCODES_H
 
 #include <stdint.h>
 

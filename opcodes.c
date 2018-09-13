@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "processor.h"
+#include "opcodes.h"
 
 int opcode_00(struct State *state) {
     printf("unimplemented opcode 00\n");

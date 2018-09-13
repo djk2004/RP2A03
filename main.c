@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include "processor.h"
+#include "opcodes.h"
 
 const int INTERRUPT_PERIOD_MS = 60000;
 const int MAX_MEMORY_BYTES = 65536;
