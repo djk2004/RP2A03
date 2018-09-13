@@ -20,8 +20,8 @@ int main() {
 
 
     // TODO: load something into memory here
-    state.a = 0x0B;
-    state.memory[0xCD] = 0xCF; // zero page
+    state.a = 0xF0;
+    state.memory[0xCD] = 0x0F; // zero page
 
     // program
     state.memory[0x00] = 0x25;
@@ -48,6 +48,8 @@ int main() {
     }
 
     printf("accumulator = %02X\n", state.a);
+    printf("negative = %d\n", state.negative);
+    printf("zero = %d\n", state.zero);
 
     free(state.memory);
     return 0;
