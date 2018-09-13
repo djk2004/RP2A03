@@ -14,31 +14,29 @@ int main() {
         .p = 0,
         .a = 0,
         .x = 0,
-        .y = 0,
-        .cycle_counter = 0
+        .y = 0
     };
 
 
     // TODO: load something into memory here
 
-    state.cycle_counter = INTERRUPT_PERIOD_MS;
+    // state.cycle_counter = INTERRUPT_PERIOD_MS;
     state.pc = 0;  // TODO: set initial memory location somehow
 
-    bool is_running = true;
-    while (is_running) {
+    int run_state = 0;
+    while (run_state == 0) {
         byte opcode = state.memory[state.pc++];  // TODO: make sure that program counter is incremented properly
         // cycle_counter -= cycles[opcode];  // TODO: define cycles
 
-        run_opcode(opcode, &state);
+        run_state = run_opcode(opcode, &state);
 
-        if (state.cycle_counter <= 0) {
-            // TODO: some interrupt tasks here
-
-            state.cycle_counter += INTERRUPT_PERIOD_MS;
-            // TODO: find a way to set is_running to false here when needed
-            // if (can_shutdown)
-            //     is_running = false;
-        }
+        // if (state.cycle_counter <= 0) {
+        //     // TODO: some interrupt tasks here
+        //     state.cycle_counter += INTERRUPT_PERIOD_MS;
+        //     // TODO: find a way to set is_running to false here when needed
+        //     // if (can_shutdown)
+        //     //     is_running = false;
+        // }
     }
 
     free(state.memory);
