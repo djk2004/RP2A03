@@ -9,7 +9,8 @@ const int MAX_MEMORY_BYTES = 65536;
 int main() {
     struct State state = { 
         .memory = (byte*)calloc(MAX_MEMORY_BYTES, sizeof(byte)),
-        .pc = 0,
+        .program_counter = 0,
+        .cycles = 0,
         .s = 0,
         .p = 0,
         .a = 0,
@@ -19,15 +20,22 @@ int main() {
 
 
     // TODO: load something into memory here
+    state.a = 0x0B;
+    state.memory[0xCD] = 0xCF; // zero page
+
+    // program
+    state.memory[0x00] = 0x25;
+    state.memory[0x01] = 0xCD;
+
 
     // state.cycle_counter = INTERRUPT_PERIOD_MS;
-    state.pc = 0;  // TODO: set initial memory location somehow
+    state.program_counter = 0;  // TODO: set initial memory location somehow
 
     int run_state = 0;
     while (run_state == 0) {
-        byte opcode = state.memory[state.pc++];  // TODO: make sure that program counter is incremented properly
-        // cycle_counter -= cycles[opcode];  // TODO: define cycles
-
+        // After retrieving the opcode, the program counter will automatically increment by 1.
+        byte opcode = state.memory[state.program_counter++];
+        state.cycles++;  // Also increment the cycle counter
         run_state = run_opcode(opcode, &state);
 
         // if (state.cycle_counter <= 0) {
@@ -38,6 +46,8 @@ int main() {
         //     //     is_running = false;
         // }
     }
+
+    printf("accumulator = %02X\n", state.a);
 
     free(state.memory);
     return 0;

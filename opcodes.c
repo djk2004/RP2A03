@@ -6,6 +6,30 @@ int unimplemented(struct State *state) {
     return -1;
 }
 
+byte zero_page_read(struct State *state) {
+    byte lowBytes = state->memory[state->program_counter++];
+    state->cycles++;
+    byte value = state->memory[lowBytes];
+    state->cycles++;
+    return value;
+}
+
+int and_zero_page(struct State *state) {
+    byte value = zero_page_read(state);
+    state->a &= value;
+    state->negative = (state->a & 128) >> 7;
+    state->zero = state->a == 0;
+    return 0;
+}
+
+int lda_zero_page(struct State *state) {
+    byte value = zero_page_read(state);
+    state->a = value;
+    state->negative = (state->a & 128) >> 7;
+    state->zero = state->a == 0;
+    return 0;
+}
+
 int (*opcodes[])(struct State*) = { 
     unimplemented,   // opcode 00
     unimplemented,   // opcode 01
@@ -44,7 +68,7 @@ int (*opcodes[])(struct State*) = {
     unimplemented,   // opcode 22
     unimplemented,   // opcode 23
     unimplemented,   // opcode 24
-    unimplemented,   // opcode 25
+    and_zero_page,   // opcode 25
     unimplemented,   // opcode 26
     unimplemented,   // opcode 27
     unimplemented,   // opcode 28
@@ -172,7 +196,7 @@ int (*opcodes[])(struct State*) = {
     unimplemented,   // opcode A2
     unimplemented,   // opcode A3
     unimplemented,   // opcode A4
-    unimplemented,   // opcode A5
+    lda_zero_page,   // opcode A5
     unimplemented,   // opcode A6
     unimplemented,   // opcode A7
     unimplemented,   // opcode A8
