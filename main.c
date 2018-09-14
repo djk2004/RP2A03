@@ -27,22 +27,22 @@ int main() {
     state.memory[0x00] = 0x25;
     state.memory[0x01] = 0xCD;
 
-
-    // state.cycle_counter = INTERRUPT_PERIOD_MS;
-    state.program_counter = 0;  // TODO: set initial memory location somehow
-
+    state.program_counter = 0;
     int run_state = 0;
+    struct Opcode current;
     while (run_state == 0) {
-        byte opcode = read_memory(&state, state.program_counter++);
-        run_state = run_opcode(opcode, &state);
-
-        // if (state.cycle_counter <= 0) {
-        //     // TODO: some interrupt tasks here
-        //     state.cycle_counter += INTERRUPT_PERIOD_MS;
-        //     // TODO: find a way to set is_running to false here when needed
-        //     // if (can_shutdown)
-        //     //     is_running = false;
-        // }
+        if (state.cycles % INTERRUPT_PERIOD_MS == 0) {
+            // TODO: some interrupt tasks here, increment cycles as needed
+            state.cycles++;
+        } else {
+            byte opcode = state.memory[state.program_counter++];
+            state.cycles++;
+            current = run_opcode(opcode, &state);
+            for (int i=0; i<current.cycles; i++) {
+                run_state = current.instructions[i](&state);
+                state.cycles++;
+            }
+        }
     }
 
     // TODO: remove later
