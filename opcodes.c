@@ -1,8 +1,12 @@
 #include <stdio.h>
 #include "opcodes.h"
 
+bit is_negative(byte b) {
+    return (b & 128) >> 7;
+}
+
 int set_negative_bit(struct State *state, byte b) {
-    state->negative = (b & 128) >> 7;
+    state->negative = is_negative(b);
     return 0;
 }
 
@@ -11,7 +15,7 @@ int set_zero_bit(struct State *state, byte b) {
     return 0;
 }
 
-int set_zero_page_address(struct State *state) {
+int get_zero_page_address(struct State *state) {
     state->_tmp_address = state->memory[state->program_counter++];
     return 0;
 }
@@ -21,17 +25,65 @@ int unimplemented(struct State *state) {
     return -1;
 }
 
-int and_zero_page(struct State *state) {
+int and_a_tmp_address(struct State *state) {
     state->a &= state->memory[state->_tmp_address];
     set_negative_bit(state, state->a);
     set_zero_bit(state, state->a);
     return 0;
 }
 
-int lda_zero_page(struct State *state) {
+int or_a_tmp_address(struct State *state) {
+    state->a |= state->memory[state->_tmp_address];
+    set_negative_bit(state, state->a);
+    set_zero_bit(state, state->a);
+    return 0;
+}
+
+int eor_a_tmp_address(struct State *state) {
+    state->a ^= state->memory[state->_tmp_address];
+    set_negative_bit(state, state->a);
+    set_zero_bit(state, state->a);
+    return 0;
+}
+
+int adc_a_tmp_address(struct State *state) {
+    byte value = state->memory[state->_tmp_address];
+    bit is_negative_value = is_negative(value);
+    bit is_negative_a = is_negative(state->a);
+    bool signs_match = (is_negative_a && is_negative_value) || (!is_negative_a && !is_negative_value);
+    if (signs_match) {
+        state->a += value;
+        // state->overflow = (old_a + value) != state->a;
+        // set_carry_bit(state, state->a);
+    } else {
+        state->a -= value;
+        // state->overflow = (old_a - value) != state->a;
+        // set_carry_bit(state, state->a);
+    }
+    
+    set_negative_bit(state, state->a);
+    set_zero_bit(state, state->a);
+    return 0;
+}
+
+int lda_tmp_address(struct State *state) {
     state->a = state->memory[state->_tmp_address];
     set_negative_bit(state, state->a);
     set_zero_bit(state, state->a);
+    return 0;
+}
+
+int ldx_tmp_address(struct State *state) {
+    state->x = state->memory[state->_tmp_address];
+    set_negative_bit(state, state->x);
+    set_zero_bit(state, state->x);
+    return 0;
+}
+
+int ldy_tmp_address(struct State *state) {
+    state->y = state->memory[state->_tmp_address];
+    set_negative_bit(state, state->y);
+    set_zero_bit(state, state->y);
     return 0;
 }
 
@@ -40,15 +92,45 @@ instructions unimplemented_opcode = {
     NULL
 };
 
+instructions ora_zero_page_05 = {
+    get_zero_page_address,
+    or_a_tmp_address,
+    NULL
+};
+
 instructions and_zero_page_25 = {
-    set_zero_page_address,
-    and_zero_page,
+    get_zero_page_address,
+    and_a_tmp_address,
+    NULL
+};
+
+instructions eor_zero_page_45 = {
+    get_zero_page_address,
+    eor_a_tmp_address,
+    NULL
+};
+
+instructions adc_zero_page_65 = {
+    get_zero_page_address,
+    adc_a_tmp_address,
+    NULL
+};
+
+instructions ldy_zero_page_A4 = {
+    get_zero_page_address,
+    ldy_tmp_address,
     NULL
 };
 
 instructions lda_zero_page_A5 = {
-    set_zero_page_address,
-    lda_zero_page,
+    get_zero_page_address,
+    lda_tmp_address,
+    NULL
+};
+
+instructions ldx_zero_page_A6 = {
+    get_zero_page_address,
+    ldx_tmp_address,
     NULL
 };
 
@@ -59,7 +141,7 @@ instructions* get_opcode_instructions(byte opcode) {
         case 0x02: return &unimplemented_opcode;
         case 0x03: return &unimplemented_opcode;
         case 0x04: return &unimplemented_opcode;
-        case 0x05: return &unimplemented_opcode;
+        case 0x05: return &ora_zero_page_05;
         case 0x06: return &unimplemented_opcode;
         case 0x07: return &unimplemented_opcode;
         case 0x08: return &unimplemented_opcode;
@@ -123,7 +205,7 @@ instructions* get_opcode_instructions(byte opcode) {
         case 0x42: return &unimplemented_opcode;
         case 0x43: return &unimplemented_opcode;
         case 0x44: return &unimplemented_opcode;
-        case 0x45: return &unimplemented_opcode;
+        case 0x45: return &eor_zero_page_45;
         case 0x46: return &unimplemented_opcode;
         case 0x47: return &unimplemented_opcode;
         case 0x48: return &unimplemented_opcode;
@@ -155,7 +237,7 @@ instructions* get_opcode_instructions(byte opcode) {
         case 0x62: return &unimplemented_opcode;
         case 0x63: return &unimplemented_opcode;
         case 0x64: return &unimplemented_opcode;
-        case 0x65: return &unimplemented_opcode;
+        case 0x65: return &adc_zero_page_65;
         case 0x66: return &unimplemented_opcode;
         case 0x67: return &unimplemented_opcode;
         case 0x68: return &unimplemented_opcode;
@@ -218,9 +300,9 @@ instructions* get_opcode_instructions(byte opcode) {
         case 0xA1: return &unimplemented_opcode;
         case 0xA2: return &unimplemented_opcode;
         case 0xA3: return &unimplemented_opcode;
-        case 0xA4: return &unimplemented_opcode;
+        case 0xA4: return &ldy_zero_page_A4;
         case 0xA5: return &lda_zero_page_A5;
-        case 0xA6: return &unimplemented_opcode;
+        case 0xA6: return &ldx_zero_page_A6;
         case 0xA7: return &unimplemented_opcode;
         case 0xA8: return &unimplemented_opcode;
         case 0xA9: return &unimplemented_opcode;

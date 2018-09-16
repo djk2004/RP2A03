@@ -15,7 +15,7 @@ struct State {
     bit carry, zero, interrupt_disable, decimal, break_command, overflow, negative;
 
     // The following are used to store state between cycles
-    byte _tmp_address;
+    unsigned short _tmp_address;
 };
 
 typedef int (*instructions[])(struct State*);

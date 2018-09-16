@@ -20,11 +20,11 @@ int main() {
 
 
     // TODO: load something into memory here
-    state.a = 0xFA;
-    state.memory[0xCD] = 0xF3; // zero page
+    state.a = 0x7F;
+    state.memory[0xCD] = 0x01; // zero page
 
     // program
-    state.memory[0x00] = 0x25;
+    state.memory[0x00] = 0x65;
     state.memory[0x01] = 0xCD;
 
     state.program_counter = 0;
@@ -48,6 +48,8 @@ int main() {
     printf("accumulator = %02X\n", state.a);
     printf("negative = %d\n", state.negative);
     printf("zero = %d\n", state.zero);
+    printf("overflow = %d\n", state.overflow);
+    printf("carry = %d\n", state.carry);
     printf("program_counter = %02X\n", state.program_counter);
     printf("cycles = %lu\n", state.cycles);
 
