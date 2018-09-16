@@ -18,17 +18,7 @@ struct State {
     byte _tmp_address;
 };
 
-struct Opcode {
-    byte opcode;
-
-    // The first cycle of each opcode happens in the main loop, so this number must be one cycle less than
-    // the total number of cycles needed to complete the operation.
-    int cycles;
-    
-    // TODO: can this array be flexible?
-    int (*instructions[8])(struct State*);
-};
-
-struct Opcode run_opcode(byte opcode, struct State* state);
+typedef int (*instructions[])(struct State*);
+instructions* get_opcode_instructions(byte opcode);
 
 #endif
