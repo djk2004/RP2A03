@@ -20,7 +20,7 @@ int main() {
 
 
     // TODO: load something into memory here
-    state.a = 0x7F;
+    state.a = 0xFF;
     state.memory[0xCD] = 0x01; // zero page
 
     // program

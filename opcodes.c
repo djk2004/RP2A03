@@ -49,19 +49,20 @@ int eor_a_tmp_address(struct State *state) {
 int adc_a_tmp_address(struct State *state) {
     byte value = state->memory[state->_tmp_address];
     bit is_negative_value = is_negative(value);
-    bit is_negative_a = is_negative(state->a);
-    bool signs_match = (is_negative_a && is_negative_value) || (!is_negative_a && !is_negative_value);
+    bit is_negative_old_a = is_negative(state->a);
+    bool signs_match = (is_negative_old_a && is_negative_value) || (!is_negative_old_a && !is_negative_value);
     if (signs_match) {
         state->a += value;
-        // state->overflow = (old_a + value) != state->a;
+        state->negative = is_negative(state->a);
+        state->overflow = is_negative_old_a ^ state->negative;
         // set_carry_bit(state, state->a);
     } else {
         state->a -= value;
-        // state->overflow = (old_a - value) != state->a;
+        state->negative = is_negative(state->a);
+        state->overflow = 0;
         // set_carry_bit(state, state->a);
     }
     
-    set_negative_bit(state, state->a);
     set_zero_bit(state, state->a);
     return 0;
 }
