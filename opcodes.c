@@ -5,14 +5,8 @@ bit is_negative(byte b) {
     return (b & 128) >> 7;
 }
 
-int set_negative_bit(struct State *state, byte b) {
-    state->negative = is_negative(b);
-    return 0;
-}
-
-int set_zero_bit(struct State *state, byte b) {
-    state->zero = b == 0;
-    return 0;
+bit is_zero(byte b) {
+    return b == 0;
 }
 
 int get_zero_page_address(struct State *state) {
@@ -27,22 +21,22 @@ int unimplemented(struct State *state) {
 
 int and_a_tmp_address(struct State *state) {
     state->a &= state->memory[state->_tmp_address];
-    set_negative_bit(state, state->a);
-    set_zero_bit(state, state->a);
+    state->negative = is_negative(state->a);
+    state->zero = is_zero(state->a);
     return 0;
 }
 
 int or_a_tmp_address(struct State *state) {
     state->a |= state->memory[state->_tmp_address];
-    set_negative_bit(state, state->a);
-    set_zero_bit(state, state->a);
+    state->negative = is_negative(state->a);
+    state->zero = is_zero(state->a);
     return 0;
 }
 
 int eor_a_tmp_address(struct State *state) {
     state->a ^= state->memory[state->_tmp_address];
-    set_negative_bit(state, state->a);
-    set_zero_bit(state, state->a);
+    state->negative = is_negative(state->a);
+    state->zero = is_zero(state->a);
     return 0;
 }
 
@@ -63,28 +57,28 @@ int adc_a_tmp_address(struct State *state) {
         // set_carry_bit(state, state->a);
     }
     
-    set_zero_bit(state, state->a);
+    state->zero = is_zero(state->a);
     return 0;
 }
 
 int lda_tmp_address(struct State *state) {
     state->a = state->memory[state->_tmp_address];
-    set_negative_bit(state, state->a);
-    set_zero_bit(state, state->a);
+    state->negative = is_negative(state->a);
+    state->zero = is_zero(state->a);
     return 0;
 }
 
 int ldx_tmp_address(struct State *state) {
     state->x = state->memory[state->_tmp_address];
-    set_negative_bit(state, state->x);
-    set_zero_bit(state, state->x);
+    state->negative = is_negative(state->x);
+    state->zero = is_zero(state->x);
     return 0;
 }
 
 int ldy_tmp_address(struct State *state) {
     state->y = state->memory[state->_tmp_address];
-    set_negative_bit(state, state->y);
-    set_zero_bit(state, state->y);
+    state->negative = is_negative(state->y);
+    state->zero = is_zero(state->y);
     return 0;
 }
 
