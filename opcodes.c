@@ -40,23 +40,36 @@ int eor_a_tmp_address(struct State *state) {
     return 0;
 }
 
+byte pow2(int p) {
+    byte n = 1;
+    for (int i=0; i<p; i++)
+        n *= 2;
+    return n;
+}
+
+
 int adc_a_tmp_address(struct State *state) {
     byte value = state->memory[state->_tmp_address];
-    bit is_negative_value = is_negative(value);
-    bit is_negative_old_a = is_negative(state->a);
-    bool signs_match = (is_negative_old_a && is_negative_value) || (!is_negative_old_a && !is_negative_value);
-    if (signs_match) {
-        state->a += value;
-        state->negative = is_negative(state->a);
-        state->overflow = is_negative_old_a ^ state->negative;
-        // set_carry_bit(state, state->a);
-    } else {
-        state->a -= value;
-        state->negative = is_negative(state->a);
-        state->overflow = 0;
-        // set_carry_bit(state, state->a);
+    bit carry = 0, overflow = 0;
+    byte new_value = 0;
+    for (int i=0; i<8; i++) {
+        byte mask = pow2(i);
+        bit b1 = (state->a & mask) >> i; 
+        bit b2 = (value & mask) >> i;
+        bit b1_xor_b2 = b1 ^ b2;
+        bit sum = b1_xor_b2 ^ carry;
+        carry = (b1 & b2) | (carry & b1_xor_b2);
+        new_value |= (sum << i); 
+        if (i == 6)
+            overflow = carry;
+        else if (i == 7)
+            overflow ^= carry;
+        // printf("%d  %d  %d  %d   %d\n",mask,b1,b2,sum,carry);
     }
-    
+
+    state->a = new_value;
+    state->carry = carry;
+    state->overflow = overflow;
     state->zero = is_zero(state->a);
     return 0;
 }
