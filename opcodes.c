@@ -6,7 +6,7 @@ bit is_negative(byte b) {
 }
 
 bit is_zero(byte b) {
-    return b == 0;
+    return b == 0x00;
 }
 
 int get_zero_page_address(struct State *state) {
