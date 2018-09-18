@@ -18,14 +18,20 @@ int main() {
         .y = 0
     };
 
-
-    // TODO: load something into memory here
-    state.a = 0x01;
-    state.memory[0xCD] = 0x8E; // zero page
-
     // program
-    state.memory[0x00] = 0x65;
-    state.memory[0x01] = 0xCD;
+    int index = 0;
+    state.memory[index++] = 0xA2;
+    state.memory[index++] = 0x01;
+    state.memory[index++] = 0xA0;
+    state.memory[index++] = 0x02;
+    state.memory[index++] = 0x86;
+    state.memory[index++] = 0xF0;
+    state.memory[index++] = 0x84;
+    state.memory[index++] = 0xF1;
+    state.memory[index++] = 0x65;
+    state.memory[index++] = 0xF0;
+    state.memory[index++] = 0x65;
+    state.memory[index++] = 0xF1;
 
     state.program_counter = 0;
     int run_state = 0;
@@ -46,6 +52,8 @@ int main() {
 
     // TODO: remove later
     printf("accumulator = %02X\n", state.a);
+    printf("x = %02X\n", state.x);
+    printf("y = %02X\n", state.y);
     printf("negative = %d\n", state.negative);
     printf("zero = %d\n", state.zero);
     printf("overflow = %d\n", state.overflow);

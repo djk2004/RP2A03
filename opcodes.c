@@ -125,6 +125,21 @@ int ldy_immediate(struct State *state) {
     return 0;
 }
 
+int stx_to_tmp_address(struct State *state) {
+    state->memory[state->_tmp_address] = state->x;
+    return 0;
+}
+
+int sty_to_tmp_address(struct State *state) {
+    state->memory[state->_tmp_address] = state->y;
+    return 0;
+}
+
+int sta_to_tmp_address(struct State *state) {
+    state->memory[state->_tmp_address] = state->a;
+    return 0;
+}
+
 instructions unimplemented_opcode = {
     unimplemented,
     NULL
@@ -151,6 +166,24 @@ instructions eor_zero_page_45 = {
 instructions adc_zero_page_65 = {
     get_zero_page_address,
     adc_a_tmp_address,
+    NULL
+};
+
+instructions sty_zero_page_84 = {
+    get_zero_page_address,
+    sty_to_tmp_address,
+    NULL
+};
+
+instructions sta_zero_page_85 = {
+    get_zero_page_address,
+    sta_to_tmp_address,
+    NULL
+};
+
+instructions stx_zero_page_86 = {
+    get_zero_page_address,
+    stx_to_tmp_address,
     NULL
 };
 
@@ -321,9 +354,9 @@ instructions* get_opcode_instructions(byte opcode) {
         case 0x81: return &unimplemented_opcode;
         case 0x82: return &unimplemented_opcode;
         case 0x83: return &unimplemented_opcode;
-        case 0x84: return &unimplemented_opcode;
-        case 0x85: return &unimplemented_opcode;
-        case 0x86: return &unimplemented_opcode;
+        case 0x84: return &sty_zero_page_84;
+        case 0x85: return &sta_zero_page_85;
+        case 0x86: return &stx_zero_page_86;
         case 0x87: return &unimplemented_opcode;
         case 0x88: return &unimplemented_opcode;
         case 0x89: return &unimplemented_opcode;
