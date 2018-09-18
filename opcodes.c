@@ -74,24 +74,54 @@ int adc_a_tmp_address(struct State *state) {
     return 0;
 }
 
-int lda_tmp_address(struct State *state) {
-    state->a = state->memory[state->_tmp_address];
+int lda(struct State *state, unsigned short address) {
+    state->a = state->memory[address];
     state->negative = is_negative(state->a);
     state->zero = is_zero(state->a);
     return 0;
 }
 
-int ldx_tmp_address(struct State *state) {
-    state->x = state->memory[state->_tmp_address];
+int lda_immediate(struct State *state) {
+    lda(state, state->program_counter++);
+    return 0;
+}
+
+int lda_tmp_address(struct State *state) {
+    lda(state, state->_tmp_address);
+    return 0;
+}
+
+int ldx(struct State *state, unsigned short address) {
+    state->x = state->memory[address];
     state->negative = is_negative(state->x);
     state->zero = is_zero(state->x);
     return 0;
 }
 
-int ldy_tmp_address(struct State *state) {
-    state->y = state->memory[state->_tmp_address];
+int ldx_tmp_address(struct State *state) {
+    ldx(state, state->_tmp_address);
+    return 0;
+}
+
+int ldx_immediate(struct State *state) {
+    ldx(state, state->program_counter++);
+    return 0;
+}
+
+int ldy(struct State *state, unsigned short address) {
+    state->y = state->memory[address];
     state->negative = is_negative(state->y);
     state->zero = is_zero(state->y);
+    return 0;
+}
+
+int ldy_tmp_address(struct State *state) {
+    ldy(state, state->_tmp_address);
+    return 0;
+}
+
+int ldy_immediate(struct State *state) {
+    ldy(state, state->program_counter++);
     return 0;
 }
 
@@ -124,6 +154,16 @@ instructions adc_zero_page_65 = {
     NULL
 };
 
+instructions ldy_immediate_A0 = {
+    ldy_immediate,
+    NULL
+};
+
+instructions ldx_immediate_A2 = {
+    ldx_immediate,
+    NULL
+};
+
 instructions ldy_zero_page_A4 = {
     get_zero_page_address,
     ldy_tmp_address,
@@ -133,6 +173,11 @@ instructions ldy_zero_page_A4 = {
 instructions lda_zero_page_A5 = {
     get_zero_page_address,
     lda_tmp_address,
+    NULL
+};
+
+instructions lda_immediate_A9 = {
+    lda_immediate,
     NULL
 };
 
@@ -304,16 +349,16 @@ instructions* get_opcode_instructions(byte opcode) {
         case 0x9D: return &unimplemented_opcode;
         case 0x9E: return &unimplemented_opcode;
         case 0x9F: return &unimplemented_opcode;
-        case 0xA0: return &unimplemented_opcode;
+        case 0xA0: return &ldy_immediate_A0;
         case 0xA1: return &unimplemented_opcode;
-        case 0xA2: return &unimplemented_opcode;
+        case 0xA2: return &ldx_immediate_A2;
         case 0xA3: return &unimplemented_opcode;
         case 0xA4: return &ldy_zero_page_A4;
         case 0xA5: return &lda_zero_page_A5;
         case 0xA6: return &ldx_zero_page_A6;
         case 0xA7: return &unimplemented_opcode;
         case 0xA8: return &unimplemented_opcode;
-        case 0xA9: return &unimplemented_opcode;
+        case 0xA9: return &lda_immediate_A9;
         case 0xAA: return &unimplemented_opcode;
         case 0xAB: return &unimplemented_opcode;
         case 0xAC: return &unimplemented_opcode;
