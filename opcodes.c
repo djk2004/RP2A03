@@ -64,13 +64,13 @@ int adc_a_tmp_address(struct State *state) {
             overflow = carry;
         else if (i == 7)
             overflow ^= carry;
-        // printf("%d  %d  %d  %d   %d\n",mask,b1,b2,sum,carry);
     }
 
     state->a = new_value;
     state->carry = carry;
     state->overflow = overflow;
     state->zero = is_zero(state->a);
+    state->negative = is_negative(state->a);
     return 0;
 }
 

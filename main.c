@@ -20,8 +20,8 @@ int main() {
 
 
     // TODO: load something into memory here
-    state.a = 0x80;
-    state.memory[0xCD] = 0x00; // zero page
+    state.a = 0x01;
+    state.memory[0xCD] = 0x8E; // zero page
 
     // program
     state.memory[0x00] = 0x65;
