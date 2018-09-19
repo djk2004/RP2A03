@@ -1,20 +1,29 @@
 #include <stdio.h>
 #include "opcodes.h"
 
+const byte BIT_0 = 0x01;
+const byte BIT_1 = 0x02;
+const byte BIT_2 = 0x04;
+const byte BIT_3 = 0x08;
+const byte BIT_4 = 0x10;
+const byte BIT_5 = 0x20;
+const byte BIT_6 = 0x40;
+const byte BIT_7 = 0x80;
+
 bit is_negative(byte b) {
-    return (b & 128) >> 7;
+    return (b & BIT_7) >> 7;
 }
 
 byte pow2(int p) {
     switch(p) {
-        case 0: return 0x01;
-        case 1: return 0x02;
-        case 2: return 0x04;
-        case 3: return 0x08;
-        case 4: return 0x10;
-        case 5: return 0x20;
-        case 6: return 0x40;
-        case 7: return 0x80;
+        case 0: return BIT_0;
+        case 1: return BIT_1;
+        case 2: return BIT_2;
+        case 3: return BIT_3;
+        case 4: return BIT_4;
+        case 5: return BIT_5;
+        case 6: return BIT_6;
+        case 7: return BIT_7;
     }
     return -1;
 }
