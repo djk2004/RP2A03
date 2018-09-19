@@ -20,17 +20,17 @@ int main() {
 
     // program
     int index = 0;
-    state.memory[index++] = 0xA2;
+    state.memory[index++] = 0xA2;  // LDX #$01
     state.memory[index++] = 0x01;
-    state.memory[index++] = 0xA0;
+    state.memory[index++] = 0xA0;  // LDY #$02
     state.memory[index++] = 0x02;
-    state.memory[index++] = 0x86;
+    state.memory[index++] = 0x86;  // STX $F0
     state.memory[index++] = 0xF0;
-    state.memory[index++] = 0x84;
+    state.memory[index++] = 0x84;  // STY $F1
     state.memory[index++] = 0xF1;
-    state.memory[index++] = 0x65;
+    state.memory[index++] = 0x65;  // ADC $F0
     state.memory[index++] = 0xF0;
-    state.memory[index++] = 0x65;
+    state.memory[index++] = 0xE5;  // SBC $F1
     state.memory[index++] = 0xF1;
 
     state.program_counter = 0;

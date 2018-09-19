@@ -5,6 +5,28 @@ bit is_negative(byte b) {
     return (b & 128) >> 7;
 }
 
+byte pow2(int p) {
+    byte n = 1;
+    for (int i=0; i<p; i++)
+        n *= 2;
+    return n;
+}
+
+byte get_twos_complement(byte b) {
+    byte n = ~b, complement = 0;
+    bit carry = 0;
+    for (int i=0; i<8; i++) {
+        byte mask = pow2(i);
+        bit b1 = (n & mask) >> i; 
+        bit b2 = (1 & mask) >> i;
+        bit b1_xor_b2 = b1 ^ b2;
+        bit sum = b1_xor_b2 ^ carry;
+        carry = (b1 & b2) | (carry & b1_xor_b2);
+        complement |= (sum << i);
+    }
+    return complement;
+}
+
 bit is_zero(byte b) {
     return b == 0x00;
 }
@@ -40,18 +62,36 @@ int eor_a_tmp_address(struct State *state) {
     return 0;
 }
 
-byte pow2(int p) {
-    byte n = 1;
-    for (int i=0; i<p; i++)
-        n *= 2;
-    return n;
-}
-
-
 int adc_a_tmp_address(struct State *state) {
     byte value = state->memory[state->_tmp_address];
     bit carry = 0, overflow = 0;
     byte new_value = state->carry;
+    for (int i=0; i<8; i++) {
+        byte mask = pow2(i);
+        bit b1 = (state->a & mask) >> i; 
+        bit b2 = (value & mask) >> i;
+        bit b1_xor_b2 = b1 ^ b2;
+        bit sum = b1_xor_b2 ^ carry;
+        carry = (b1 & b2) | (carry & b1_xor_b2);
+        new_value |= (sum << i); 
+        if (i == 6)
+            overflow = carry;
+        else if (i == 7)
+            overflow ^= carry;
+    }
+
+    state->a = new_value;
+    state->carry = carry;
+    state->overflow = overflow;
+    state->zero = is_zero(state->a);
+    state->negative = is_negative(state->a);
+    return 0;
+}
+
+int sbc_a_tmp_address(struct State *state) {
+    byte value = get_twos_complement(state->memory[state->_tmp_address]);
+    bit carry = 0, overflow = 0;
+    byte new_value = get_twos_complement(state->carry);
     for (int i=0; i<8; i++) {
         byte mask = pow2(i);
         bit b1 = (state->a & mask) >> i; 
@@ -217,6 +257,12 @@ instructions lda_immediate_A9 = {
 instructions ldx_zero_page_A6 = {
     get_zero_page_address,
     ldx_tmp_address,
+    NULL
+};
+
+instructions sbc_zero_page_E5 = {
+    get_zero_page_address,
+    sbc_a_tmp_address,
     NULL
 };
 
@@ -451,7 +497,7 @@ instructions* get_opcode_instructions(byte opcode) {
         case 0xE2: return &unimplemented_opcode;
         case 0xE3: return &unimplemented_opcode;
         case 0xE4: return &unimplemented_opcode;
-        case 0xE5: return &unimplemented_opcode;
+        case 0xE5: return &sbc_zero_page_E5;
         case 0xE6: return &unimplemented_opcode;
         case 0xE7: return &unimplemented_opcode;
         case 0xE8: return &unimplemented_opcode;
