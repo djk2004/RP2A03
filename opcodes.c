@@ -196,6 +196,14 @@ int sta_to_tmp_address(struct State *state) {
     return 0;
 }
 
+int bit_test_zero_page(struct State *state) {
+    byte value = state->memory[state->_tmp_address];
+    state->zero = is_zero(state->a & value);
+    state->negative = value & BIT_7;
+    state->overflow = value & BIT_6;
+    return 0;
+}
+
 instructions unimplemented_opcode = {
     unimplemented,
     NULL
@@ -204,6 +212,12 @@ instructions unimplemented_opcode = {
 instructions ora_zero_page_05 = {
     get_zero_page_address,
     or_a_tmp_address,
+    NULL
+};
+
+instructions bit_test_zero_page_24 = {
+    get_zero_page_address,
+    bit_test_zero_page,
     NULL
 };
 
@@ -320,7 +334,7 @@ instructions* get_opcode_instructions(byte opcode) {
         case 0x21: return &unimplemented_opcode;
         case 0x22: return &unimplemented_opcode;
         case 0x23: return &unimplemented_opcode;
-        case 0x24: return &unimplemented_opcode;
+        case 0x24: return &bit_test_zero_page_24;
         case 0x25: return &and_zero_page_25;
         case 0x26: return &unimplemented_opcode;
         case 0x27: return &unimplemented_opcode;
