@@ -51,7 +51,7 @@ byte pow2(int p) {
 int adc_a_tmp_address(struct State *state) {
     byte value = state->memory[state->_tmp_address];
     bit carry = 0, overflow = 0;
-    byte new_value = 0;
+    byte new_value = state->carry;
     for (int i=0; i<8; i++) {
         byte mask = pow2(i);
         bit b1 = (state->a & mask) >> i; 
