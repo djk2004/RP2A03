@@ -204,6 +204,25 @@ int bit_test_zero_page(struct State *state) {
     return 0;
 }
 
+int cpy_tmp_address(struct State *state) {
+    byte value = get_twos_complement(state->memory[state->_tmp_address]);
+    bit carry = 0;
+    byte diff = 0;
+    for (int i=0; i<8; i++) {
+        byte mask = pow2(i);
+        bit b1 = (state->y & mask) >> i; 
+        bit b2 = (value & mask) >> i;
+        bit b1_xor_b2 = b1 ^ b2;
+        bit sum = b1_xor_b2 ^ carry;
+        carry = (b1 & b2) | (carry & b1_xor_b2);
+        diff |= (sum << i); 
+    }
+    state->carry = carry;
+    state->zero = is_zero(diff);
+    state->negative = is_negative(diff);
+    return 0;
+}
+
 instructions unimplemented_opcode = {
     unimplemented,
     NULL
@@ -287,6 +306,12 @@ instructions lda_immediate_A9 = {
 instructions ldx_zero_page_A6 = {
     get_zero_page_address,
     ldx_tmp_address,
+    NULL
+};
+
+instructions cpy_C4 = {
+    get_zero_page_address,
+    cpy_tmp_address,
     NULL
 };
 
@@ -494,7 +519,7 @@ instructions* get_opcode_instructions(byte opcode) {
         case 0xC1: return &unimplemented_opcode;
         case 0xC2: return &unimplemented_opcode;
         case 0xC3: return &unimplemented_opcode;
-        case 0xC4: return &unimplemented_opcode;
+        case 0xC4: return &cpy_C4;
         case 0xC5: return &unimplemented_opcode;
         case 0xC6: return &unimplemented_opcode;
         case 0xC7: return &unimplemented_opcode;
