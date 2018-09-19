@@ -6,10 +6,17 @@ bit is_negative(byte b) {
 }
 
 byte pow2(int p) {
-    byte n = 1;
-    for (int i=0; i<p; i++)
-        n *= 2;
-    return n;
+    switch(p) {
+        case 0: return 0x01;
+        case 1: return 0x02;
+        case 2: return 0x04;
+        case 3: return 0x08;
+        case 4: return 0x10;
+        case 5: return 0x20;
+        case 6: return 0x40;
+        case 7: return 0x80;
+    }
+    return -1;
 }
 
 byte get_twos_complement(byte b) {
