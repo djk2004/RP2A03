@@ -1,11 +1,7 @@
 #ifndef OPCODES_H
 #define OPCODES_H
 
-#include <stdint.h>
-#include <stdbool.h>
-
-typedef uint8_t byte;
-typedef bool bit;
+#include "binary.h"
 
 struct State {
     byte *memory;

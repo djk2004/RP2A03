@@ -1,2 +1,2 @@
 #!/bin/bash
-gcc -Wall main.c processor.c -o main
+gcc -Wall main.c binary.c opcodes.c -o main
