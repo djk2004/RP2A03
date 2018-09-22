@@ -15,17 +15,7 @@ bit is_negative(byte b) {
 }
 
 byte pow2(int p) {
-    switch(p) {
-        case 0: return BIT_0;
-        case 1: return BIT_1;
-        case 2: return BIT_2;
-        case 3: return BIT_3;
-        case 4: return BIT_4;
-        case 5: return BIT_5;
-        case 6: return BIT_6;
-        case 7: return BIT_7;
-    }
-    return -1;
+    return BIT_0 << p;
 }
 
 byte get_twos_complement(byte b) {
