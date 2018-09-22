@@ -1,6 +1,20 @@
 #include <stdio.h>
 #include "opcodes.h"
 #include "binary.h"
+#include "state.h"
+#include "ops/and.h"
+#include "ops/or.h"
+#include "ops/eor.h"
+#include "ops/adc.h"
+#include "ops/sbc.h"
+#include "ops/lda.h"
+#include "ops/ldx.h"
+#include "ops/ldy.h"
+#include "ops/stx.h"
+#include "ops/sty.h"
+#include "ops/sta.h"
+#include "ops/bit.h"
+#include "ops/cpy.h"
 
 int get_zero_page_address(struct State *state) {
     state->_tmp_address = state->memory[state->program_counter++];
@@ -10,172 +24,6 @@ int get_zero_page_address(struct State *state) {
 int unimplemented(struct State *state) {
     printf("unimplemented opcode\n");
     return -1;
-}
-
-int and_a_tmp_address(struct State *state) {
-    state->a &= state->memory[state->_tmp_address];
-    state->negative = is_negative(state->a);
-    state->zero = is_zero(state->a);
-    return 0;
-}
-
-int or_a_tmp_address(struct State *state) {
-    state->a |= state->memory[state->_tmp_address];
-    state->negative = is_negative(state->a);
-    state->zero = is_zero(state->a);
-    return 0;
-}
-
-int eor_a_tmp_address(struct State *state) {
-    state->a ^= state->memory[state->_tmp_address];
-    state->negative = is_negative(state->a);
-    state->zero = is_zero(state->a);
-    return 0;
-}
-
-int adc_a_tmp_address(struct State *state) {
-    byte value = state->memory[state->_tmp_address];
-    bit carry = 0, overflow = 0;
-    byte new_value = state->carry;
-    for (int i=0; i<8; i++) {
-        byte mask = pow2(i);
-        bit b1 = (state->a & mask) >> i; 
-        bit b2 = (value & mask) >> i;
-        bit b1_xor_b2 = b1 ^ b2;
-        bit sum = b1_xor_b2 ^ carry;
-        carry = (b1 & b2) | (carry & b1_xor_b2);
-        new_value |= (sum << i); 
-        if (i == 6)
-            overflow = carry;
-        else if (i == 7)
-            overflow ^= carry;
-    }
-
-    state->a = new_value;
-    state->carry = carry;
-    state->overflow = overflow;
-    state->zero = is_zero(state->a);
-    state->negative = is_negative(state->a);
-    return 0;
-}
-
-int sbc_a_tmp_address(struct State *state) {
-    byte value = twos_complement(state->memory[state->_tmp_address]);
-    bit carry = 0, overflow = 0;
-    byte new_value = twos_complement(state->carry);
-    for (int i=0; i<8; i++) {
-        byte mask = pow2(i);
-        bit b1 = (state->a & mask) >> i; 
-        bit b2 = (value & mask) >> i;
-        bit b1_xor_b2 = b1 ^ b2;
-        bit sum = b1_xor_b2 ^ carry;
-        carry = (b1 & b2) | (carry & b1_xor_b2);
-        new_value |= (sum << i); 
-        if (i == 6)
-            overflow = carry;
-        else if (i == 7)
-            overflow ^= carry;
-    }
-
-    state->a = new_value;
-    state->carry = carry;
-    state->overflow = overflow;
-    state->zero = is_zero(state->a);
-    state->negative = is_negative(state->a);
-    return 0;
-}
-
-int lda(struct State *state, unsigned short address) {
-    state->a = state->memory[address];
-    state->negative = is_negative(state->a);
-    state->zero = is_zero(state->a);
-    return 0;
-}
-
-int lda_immediate(struct State *state) {
-    lda(state, state->program_counter++);
-    return 0;
-}
-
-int lda_tmp_address(struct State *state) {
-    lda(state, state->_tmp_address);
-    return 0;
-}
-
-int ldx(struct State *state, unsigned short address) {
-    state->x = state->memory[address];
-    state->negative = is_negative(state->x);
-    state->zero = is_zero(state->x);
-    return 0;
-}
-
-int ldx_tmp_address(struct State *state) {
-    ldx(state, state->_tmp_address);
-    return 0;
-}
-
-int ldx_immediate(struct State *state) {
-    ldx(state, state->program_counter++);
-    return 0;
-}
-
-int ldy(struct State *state, unsigned short address) {
-    state->y = state->memory[address];
-    state->negative = is_negative(state->y);
-    state->zero = is_zero(state->y);
-    return 0;
-}
-
-int ldy_tmp_address(struct State *state) {
-    ldy(state, state->_tmp_address);
-    return 0;
-}
-
-int ldy_immediate(struct State *state) {
-    ldy(state, state->program_counter++);
-    return 0;
-}
-
-int stx_to_tmp_address(struct State *state) {
-    state->memory[state->_tmp_address] = state->x;
-    return 0;
-}
-
-int sty_to_tmp_address(struct State *state) {
-    state->memory[state->_tmp_address] = state->y;
-    return 0;
-}
-
-int sta_to_tmp_address(struct State *state) {
-    state->memory[state->_tmp_address] = state->a;
-    return 0;
-}
-
-int bit_test_zero_page(struct State *state) {
-    byte value = state->memory[state->_tmp_address];
-    state->zero = is_zero(state->a & value);
-    state->negative = value & BIT_7;
-    state->overflow = value & BIT_6;
-    return 0;
-}
-
-int cpy_tmp_address(struct State *state) {
-    byte value = twos_complement(state->memory[state->_tmp_address]);
-    bit carry = 0;
-    byte diff = 0;
-    for (int i=0; i<8; i++) {
-        byte mask = pow2(i);
-        bit b1 = (state->y & mask) >> i; 
-        bit b2 = (value & mask) >> i;
-        bit b1_xor_b2 = b1 ^ b2;
-        bit sum = b1_xor_b2 ^ carry;
-        carry = (b1 & b2) | (carry & b1_xor_b2);
-        diff |= (sum << i); 
-    }
-    state->carry = carry;
-    state->zero = is_zero(diff);
-    state->negative = is_negative(diff);
-    return 0;
 }
 
 instructions unimplemented_opcode = {

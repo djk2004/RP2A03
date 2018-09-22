@@ -1,18 +1,8 @@
 #ifndef OPCODES_H
 #define OPCODES_H
 
+#include "state.h"
 #include "binary.h"
-
-struct State {
-    byte *memory;
-    unsigned short program_counter;
-    byte s, p, a, x, y;
-    unsigned long cycles;
-    bit carry, zero, interrupt_disable, decimal, break_command, overflow, negative;
-
-    // The following are used to store state between cycles
-    unsigned short _tmp_address;
-};
 
 typedef int (*instructions[])(struct State*);
 instructions* get_opcode_instructions(byte opcode);
