@@ -35,3 +35,35 @@ byte twos_complement(byte b) {
 bit is_zero(byte b) {
     return b == 0x00;
 }
+
+struct Result add(byte value1, byte value2, bit initial_carry) {
+    struct Result r = {
+        .carry = 0,
+        .overflow = 0,
+        .zero = 0,
+        .negative = 0,
+        .result = initial_carry
+    };
+    for (int i=0; i<8; i++) {
+        byte mask = pow2(i);
+        bit b1 = (value1 & mask) >> i; 
+        bit b2 = (value2 & mask) >> i;
+        bit b1_xor_b2 = b1 ^ b2;
+        bit sum = b1_xor_b2 ^ r.carry;
+        r.carry = (b1 & b2) | (r.carry & b1_xor_b2);
+        r.result |= (sum << i); 
+        if (i == 6)
+            r.overflow = r.carry;
+        else if (i == 7)
+            r.overflow ^= r.carry;
+    }
+    r.zero = is_zero(r.result);
+    r.negative = is_negative(r.result);
+    return r;
+}
+
+struct Result subtract(byte value1, byte value2, bit initial_carry) {
+    byte value2_complement = twos_complement(value2);
+    byte carry_complement = twos_complement(initial_carry);
+    return add(value1, value2_complement, carry_complement);
+}
