@@ -18,7 +18,7 @@ extern const byte BIT_7;
 
 bit is_negative(byte b);
 byte pow2(int p);
-byte get_twos_complement(byte b);
+byte twos_complement(byte b);
 bit is_zero(byte b);
 
 #endif

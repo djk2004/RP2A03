@@ -17,7 +17,7 @@ byte pow2(int p) {
     return BIT_0 << p;
 }
 
-byte get_twos_complement(byte b) {
+byte twos_complement(byte b) {
     byte n = ~b, complement = 0;
     bit carry = 0;
     for (int i=0; i<8; i++) {

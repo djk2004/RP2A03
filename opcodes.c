@@ -60,9 +60,9 @@ int adc_a_tmp_address(struct State *state) {
 }
 
 int sbc_a_tmp_address(struct State *state) {
-    byte value = get_twos_complement(state->memory[state->_tmp_address]);
+    byte value = twos_complement(state->memory[state->_tmp_address]);
     bit carry = 0, overflow = 0;
-    byte new_value = get_twos_complement(state->carry);
+    byte new_value = twos_complement(state->carry);
     for (int i=0; i<8; i++) {
         byte mask = pow2(i);
         bit b1 = (state->a & mask) >> i; 
@@ -160,7 +160,7 @@ int bit_test_zero_page(struct State *state) {
 }
 
 int cpy_tmp_address(struct State *state) {
-    byte value = get_twos_complement(state->memory[state->_tmp_address]);
+    byte value = twos_complement(state->memory[state->_tmp_address]);
     bit carry = 0;
     byte diff = 0;
     for (int i=0; i<8; i++) {
