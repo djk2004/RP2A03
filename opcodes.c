@@ -15,6 +15,8 @@
 #include "ops/sta.h"
 #include "ops/bit.h"
 #include "ops/cpy.h"
+#include "ops/cpx.h"
+#include "ops/cmp.h"
 
 int get_zero_page_address(struct State *state) {
     state->_tmp_address = state->memory[state->program_counter++];
@@ -115,6 +117,18 @@ instructions ldx_zero_page_A6 = {
 instructions cpy_C4 = {
     get_zero_page_address,
     cpy_tmp_address,
+    NULL
+};
+
+instructions cmp_C5 = {
+    get_zero_page_address,
+    cmp_tmp_address,
+    NULL
+};
+
+instructions cpx_E4 = {
+    get_zero_page_address,
+    cpx_tmp_address,
     NULL
 };
 
@@ -323,7 +337,7 @@ instructions* get_opcode_instructions(byte opcode) {
         case 0xC2: return &unimplemented_opcode;
         case 0xC3: return &unimplemented_opcode;
         case 0xC4: return &cpy_C4;
-        case 0xC5: return &unimplemented_opcode;
+        case 0xC5: return &cmp_C5;
         case 0xC6: return &unimplemented_opcode;
         case 0xC7: return &unimplemented_opcode;
         case 0xC8: return &unimplemented_opcode;
@@ -354,7 +368,7 @@ instructions* get_opcode_instructions(byte opcode) {
         case 0xE1: return &unimplemented_opcode;
         case 0xE2: return &unimplemented_opcode;
         case 0xE3: return &unimplemented_opcode;
-        case 0xE4: return &unimplemented_opcode;
+        case 0xE4: return &cpx_E4;
         case 0xE5: return &sbc_zero_page_E5;
         case 0xE6: return &unimplemented_opcode;
         case 0xE7: return &unimplemented_opcode;
