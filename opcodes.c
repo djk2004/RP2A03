@@ -25,13 +25,13 @@ int get_zero_page_address(struct State *state) {
 }
 
 int index_zero_page_by_x(struct State *state) {
-    byte t = 0xFF & state->_tmp_address;
+    byte t = state->memory[state->_tmp_address];
     state->_tmp_address = add(t, state->x, 0).result;
     return 0;
 }
 
 int index_zero_page_by_y(struct State *state) {
-    byte t = 0xFF & state->_tmp_address;
+    byte t = state->memory[state->_tmp_address];
     state->_tmp_address = add(t, state->y, 0).result;
     return 0;
 }
