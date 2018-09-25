@@ -3,7 +3,7 @@
 
 #include "../state.h"
 
-int adc_zero_page(struct State *state);
+int adc_memory(struct State *state);
 
 
 #endif

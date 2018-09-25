@@ -1,7 +1,7 @@
 #include "../state.h"
 #include "../binary.h"
 
-int sbc_zero_page(struct State *state) {
+int sbc_memory(struct State *state) {
     byte value = state->memory[state->_tmp_address];
     struct Result r = subtract(state->a, value, state->carry);
     state->a = r.result;

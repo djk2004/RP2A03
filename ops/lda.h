@@ -4,7 +4,7 @@
 #include "../state.h"
 
 int lda_immediate(struct State *state);
-int lda_zero_page(struct State *state);
+int lda_memory(struct State *state);
 
 
 #endif

@@ -3,7 +3,7 @@
 
 #include "../state.h"
 
-int sbc_zero_page(struct State *state);
+int sbc_memory(struct State *state);
 
 
 #endif

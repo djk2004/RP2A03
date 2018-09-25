@@ -3,7 +3,7 @@
 
 #include "../state.h"
 
-int ora_zero_page(struct State *state);
+int ora_memory(struct State *state);
 
 
 #endif

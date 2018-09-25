@@ -3,7 +3,7 @@
 
 #include "../state.h"
 
-int eor_zero_page(struct State *state);
+int eor_memory(struct State *state);
 
 
 #endif

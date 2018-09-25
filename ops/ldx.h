@@ -3,7 +3,7 @@
 
 #include "../state.h"
 
-int ldx_zero_page(struct State *state);
+int ldx_memory(struct State *state);
 int ldx_immediate(struct State *state);
 
 

@@ -48,7 +48,14 @@ instructions unimplemented_opcode = {
 
 instructions ora_zero_page_05 = {
     get_zero_page_address,
-    ora_zero_page,
+    ora_memory,
+    NULL
+};
+
+instructions ora_zero_page_x_15 = {
+    get_zero_page_address,
+    index_zero_page_by_x,
+    ora_memory,
     NULL
 };
 
@@ -60,19 +67,40 @@ instructions bit_test_zero_page_24 = {
 
 instructions and_zero_page_25 = {
     get_zero_page_address,
-    and_zero_page,
+    and_memory,
+    NULL
+};
+
+instructions and_zero_page_x_35 = {
+    get_zero_page_address,
+    index_zero_page_by_x,
+    and_memory,
     NULL
 };
 
 instructions eor_zero_page_45 = {
     get_zero_page_address,
-    eor_zero_page,
+    eor_memory,
+    NULL
+};
+
+instructions eor_zero_page_x_55 = {
+    get_zero_page_address,
+    index_zero_page_by_x,
+    eor_memory,
     NULL
 };
 
 instructions adc_zero_page_65 = {
     get_zero_page_address,
-    adc_zero_page,
+    adc_memory,
+    NULL
+};
+
+instructions adc_zero_page_x_75 = {
+    get_zero_page_address,
+    index_zero_page_by_x,
+    adc_memory,
     NULL
 };
 
@@ -140,13 +168,13 @@ instructions ldx_immediate_A2 = {
 
 instructions ldy_zero_page_A4 = {
     get_zero_page_address,
-    ldy_zero_page,
+    ldy_memory,
     NULL
 };
 
 instructions lda_zero_page_A5 = {
     get_zero_page_address,
-    lda_zero_page,
+    lda_memory,
     NULL
 };
 
@@ -157,7 +185,28 @@ instructions lda_immediate_A9 = {
 
 instructions ldx_zero_page_A6 = {
     get_zero_page_address,
-    ldx_zero_page,
+    ldx_memory,
+    NULL
+};
+
+instructions ldy_zero_page_x_B4 = {
+    get_zero_page_address,
+    index_zero_page_by_x,
+    ldy_memory,
+    NULL
+};
+
+instructions lda_zero_page_x_B5 = {
+    get_zero_page_address,
+    index_zero_page_by_x,
+    lda_memory,
+    NULL
+};
+
+instructions ldx_zero_page_x_B6 = {
+    get_zero_page_address,
+    index_zero_page_by_y,
+    ldx_memory,
     NULL
 };
 
@@ -167,9 +216,16 @@ instructions cpy_C4 = {
     NULL
 };
 
-instructions cmp_C5 = {
+instructions cmp_zero_page_C5 = {
     get_zero_page_address,
-    cmp_zero_page,
+    cmp_memory,
+    NULL
+};
+
+instructions cmp_zero_page_x_D5 = {
+    get_zero_page_address,
+    index_zero_page_by_x,
+    cmp_memory,
     NULL
 };
 
@@ -181,7 +237,14 @@ instructions cpx_E4 = {
 
 instructions sbc_zero_page_E5 = {
     get_zero_page_address,
-    sbc_zero_page,
+    sbc_memory,
+    NULL
+};
+
+instructions sbc_zero_page_x_F5 = {
+    get_zero_page_address,
+    index_zero_page_by_x,
+    sbc_memory,
     NULL
 };
 
@@ -208,7 +271,7 @@ instructions* get_opcode_instructions(byte opcode) {
         case 0x12: return &unimplemented_opcode;
         case 0x13: return &unimplemented_opcode;
         case 0x14: return &unimplemented_opcode;
-        case 0x15: return &unimplemented_opcode;
+        case 0x15: return &ora_zero_page_x_15;
         case 0x16: return &unimplemented_opcode;
         case 0x17: return &unimplemented_opcode;
         case 0x18: return &unimplemented_opcode;
@@ -240,7 +303,7 @@ instructions* get_opcode_instructions(byte opcode) {
         case 0x32: return &unimplemented_opcode;
         case 0x33: return &unimplemented_opcode;
         case 0x34: return &unimplemented_opcode;
-        case 0x35: return &unimplemented_opcode;
+        case 0x35: return &and_zero_page_x_35;
         case 0x36: return &unimplemented_opcode;
         case 0x37: return &unimplemented_opcode;
         case 0x38: return &unimplemented_opcode;
@@ -272,7 +335,7 @@ instructions* get_opcode_instructions(byte opcode) {
         case 0x52: return &unimplemented_opcode;
         case 0x53: return &unimplemented_opcode;
         case 0x54: return &unimplemented_opcode;
-        case 0x55: return &unimplemented_opcode;
+        case 0x55: return &eor_zero_page_x_55;
         case 0x56: return &unimplemented_opcode;
         case 0x57: return &unimplemented_opcode;
         case 0x58: return &unimplemented_opcode;
@@ -304,7 +367,7 @@ instructions* get_opcode_instructions(byte opcode) {
         case 0x72: return &unimplemented_opcode;
         case 0x73: return &unimplemented_opcode;
         case 0x74: return &unimplemented_opcode;
-        case 0x75: return &unimplemented_opcode;
+        case 0x75: return &adc_zero_page_x_75;
         case 0x76: return &unimplemented_opcode;
         case 0x77: return &unimplemented_opcode;
         case 0x78: return &unimplemented_opcode;
@@ -367,9 +430,9 @@ instructions* get_opcode_instructions(byte opcode) {
         case 0xB1: return &unimplemented_opcode;
         case 0xB2: return &unimplemented_opcode;
         case 0xB3: return &unimplemented_opcode;
-        case 0xB4: return &unimplemented_opcode;
-        case 0xB5: return &unimplemented_opcode;
-        case 0xB6: return &unimplemented_opcode;
+        case 0xB4: return &ldy_zero_page_x_B4;
+        case 0xB5: return &lda_zero_page_x_B5;
+        case 0xB6: return &ldx_zero_page_x_B6;
         case 0xB7: return &unimplemented_opcode;
         case 0xB8: return &unimplemented_opcode;
         case 0xB9: return &unimplemented_opcode;
@@ -384,7 +447,7 @@ instructions* get_opcode_instructions(byte opcode) {
         case 0xC2: return &unimplemented_opcode;
         case 0xC3: return &unimplemented_opcode;
         case 0xC4: return &cpy_C4;
-        case 0xC5: return &cmp_C5;
+        case 0xC5: return &cmp_zero_page_C5;
         case 0xC6: return &unimplemented_opcode;
         case 0xC7: return &unimplemented_opcode;
         case 0xC8: return &unimplemented_opcode;
@@ -400,7 +463,7 @@ instructions* get_opcode_instructions(byte opcode) {
         case 0xD2: return &unimplemented_opcode;
         case 0xD3: return &unimplemented_opcode;
         case 0xD4: return &unimplemented_opcode;
-        case 0xD5: return &unimplemented_opcode;
+        case 0xD5: return &cmp_zero_page_x_D5;
         case 0xD6: return &unimplemented_opcode;
         case 0xD7: return &unimplemented_opcode;
         case 0xD8: return &unimplemented_opcode;
