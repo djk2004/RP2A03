@@ -17,9 +17,22 @@
 #include "ops/cpy.h"
 #include "ops/cpx.h"
 #include "ops/cmp.h"
+#include "ops/sax.h"
 
 int get_zero_page_address(struct State *state) {
     state->_tmp_address = state->memory[state->program_counter++];
+    return 0;
+}
+
+int index_zero_page_by_x(struct State *state) {
+    byte t = 0xFF & state->_tmp_address;
+    state->_tmp_address = add(t, state->x, 0).result;
+    return 0;
+}
+
+int index_zero_page_by_y(struct State *state) {
+    byte t = 0xFF & state->_tmp_address;
+    state->_tmp_address = add(t, state->y, 0).result;
     return 0;
 }
 
@@ -65,19 +78,53 @@ instructions adc_zero_page_65 = {
 
 instructions sty_zero_page_84 = {
     get_zero_page_address,
-    sty_zero_page,
+    sty,
     NULL
 };
 
 instructions sta_zero_page_85 = {
     get_zero_page_address,
-    sta_zero_page,
+    sta,
     NULL
 };
 
 instructions stx_zero_page_86 = {
     get_zero_page_address,
-    stx_zero_page,
+    stx,
+    NULL
+};
+
+instructions sax_zero_page_87 = {
+    get_zero_page_address,
+    sax,
+    NULL
+};
+
+instructions sty_zero_page_x_94 = {
+    get_zero_page_address,
+    index_zero_page_by_x,
+    sty,
+    NULL
+};
+
+instructions sta_zero_page_x_95 = {
+    get_zero_page_address,
+    index_zero_page_by_x,
+    sta,
+    NULL
+};
+
+instructions stx_zero_page_y_96 = {
+    get_zero_page_address,
+    index_zero_page_by_y,
+    stx,
+    NULL
+};
+
+instructions sax_zero_page_y_97 = {
+    get_zero_page_address,
+    index_zero_page_by_y,
+    sax,
     NULL
 };
 
@@ -275,7 +322,7 @@ instructions* get_opcode_instructions(byte opcode) {
         case 0x84: return &sty_zero_page_84;
         case 0x85: return &sta_zero_page_85;
         case 0x86: return &stx_zero_page_86;
-        case 0x87: return &unimplemented_opcode;
+        case 0x87: return &sax_zero_page_87;
         case 0x88: return &unimplemented_opcode;
         case 0x89: return &unimplemented_opcode;
         case 0x8A: return &unimplemented_opcode;
@@ -288,10 +335,10 @@ instructions* get_opcode_instructions(byte opcode) {
         case 0x91: return &unimplemented_opcode;
         case 0x92: return &unimplemented_opcode;
         case 0x93: return &unimplemented_opcode;
-        case 0x94: return &unimplemented_opcode;
-        case 0x95: return &unimplemented_opcode;
-        case 0x96: return &unimplemented_opcode;
-        case 0x97: return &unimplemented_opcode;
+        case 0x94: return &sty_zero_page_x_94;
+        case 0x95: return &sta_zero_page_x_95;
+        case 0x96: return &stx_zero_page_y_96;
+        case 0x97: return &sax_zero_page_y_97;
         case 0x98: return &unimplemented_opcode;
         case 0x99: return &unimplemented_opcode;
         case 0x9A: return &unimplemented_opcode;

@@ -3,7 +3,6 @@
 
 #include "../state.h"
 
-int sty_zero_page(struct State *state);
-
+int sty(struct State *state);
 
 #endif

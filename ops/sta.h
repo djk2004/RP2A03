@@ -3,7 +3,7 @@
 
 #include "../state.h"
 
-int sta_zero_page(struct State *state);
+int sta(struct State *state);
 
 
 #endif
