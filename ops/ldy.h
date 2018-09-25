@@ -3,7 +3,7 @@
 
 #include "../state.h"
 
-int ldy_tmp_address(struct State *state);
+int ldy_zero_page(struct State *state);
 int ldy_immediate(struct State *state);
 
 

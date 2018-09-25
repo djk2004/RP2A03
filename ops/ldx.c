@@ -7,7 +7,7 @@ int ldx(struct State *state, unsigned short address) {
     return 0;
 }
 
-int ldx_tmp_address(struct State *state) {
+int ldx_zero_page(struct State *state) {
     ldx(state, state->_tmp_address);
     return 0;
 }

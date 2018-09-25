@@ -3,7 +3,7 @@
 
 #include "../state.h"
 
-int eor_a_tmp_address(struct State *state);
+int eor_zero_page(struct State *state);
 
 
 #endif

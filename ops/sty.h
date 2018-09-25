@@ -3,7 +3,7 @@
 
 #include "../state.h"
 
-int sty_to_tmp_address(struct State *state);
+int sty_zero_page(struct State *state);
 
 
 #endif

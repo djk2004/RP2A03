@@ -7,7 +7,7 @@ int ldy(struct State *state, unsigned short address) {
     return 0;
 }
 
-int ldy_tmp_address(struct State *state) {
+int ldy_zero_page(struct State *state) {
     ldy(state, state->_tmp_address);
     return 0;
 }

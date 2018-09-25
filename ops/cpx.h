@@ -3,7 +3,7 @@
 
 #include "../state.h"
 
-int cpx_tmp_address(struct State *state);
+int cpx_zero_page(struct State *state);
 
 
 #endif

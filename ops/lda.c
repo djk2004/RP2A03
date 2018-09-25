@@ -12,7 +12,7 @@ int lda_immediate(struct State *state) {
     return 0;
 }
 
-int lda_tmp_address(struct State *state) {
+int lda_zero_page(struct State *state) {
     lda(state, state->_tmp_address);
     return 0;
 }

@@ -3,7 +3,7 @@
 #include "binary.h"
 #include "state.h"
 #include "ops/and.h"
-#include "ops/or.h"
+#include "ops/ora.h"
 #include "ops/eor.h"
 #include "ops/adc.h"
 #include "ops/sbc.h"
@@ -35,7 +35,7 @@ instructions unimplemented_opcode = {
 
 instructions ora_zero_page_05 = {
     get_zero_page_address,
-    or_a_tmp_address,
+    ora_zero_page,
     NULL
 };
 
@@ -47,37 +47,37 @@ instructions bit_test_zero_page_24 = {
 
 instructions and_zero_page_25 = {
     get_zero_page_address,
-    and_a_tmp_address,
+    and_zero_page,
     NULL
 };
 
 instructions eor_zero_page_45 = {
     get_zero_page_address,
-    eor_a_tmp_address,
+    eor_zero_page,
     NULL
 };
 
 instructions adc_zero_page_65 = {
     get_zero_page_address,
-    adc_a_tmp_address,
+    adc_zero_page,
     NULL
 };
 
 instructions sty_zero_page_84 = {
     get_zero_page_address,
-    sty_to_tmp_address,
+    sty_zero_page,
     NULL
 };
 
 instructions sta_zero_page_85 = {
     get_zero_page_address,
-    sta_to_tmp_address,
+    sta_zero_page,
     NULL
 };
 
 instructions stx_zero_page_86 = {
     get_zero_page_address,
-    stx_to_tmp_address,
+    stx_zero_page,
     NULL
 };
 
@@ -93,13 +93,13 @@ instructions ldx_immediate_A2 = {
 
 instructions ldy_zero_page_A4 = {
     get_zero_page_address,
-    ldy_tmp_address,
+    ldy_zero_page,
     NULL
 };
 
 instructions lda_zero_page_A5 = {
     get_zero_page_address,
-    lda_tmp_address,
+    lda_zero_page,
     NULL
 };
 
@@ -110,31 +110,31 @@ instructions lda_immediate_A9 = {
 
 instructions ldx_zero_page_A6 = {
     get_zero_page_address,
-    ldx_tmp_address,
+    ldx_zero_page,
     NULL
 };
 
 instructions cpy_C4 = {
     get_zero_page_address,
-    cpy_tmp_address,
+    cpy_zero_page,
     NULL
 };
 
 instructions cmp_C5 = {
     get_zero_page_address,
-    cmp_tmp_address,
+    cmp_zero_page,
     NULL
 };
 
 instructions cpx_E4 = {
     get_zero_page_address,
-    cpx_tmp_address,
+    cpx_zero_page,
     NULL
 };
 
 instructions sbc_zero_page_E5 = {
     get_zero_page_address,
-    sbc_a_tmp_address,
+    sbc_zero_page,
     NULL
 };
 
