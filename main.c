@@ -41,24 +41,10 @@ int main() {
     // state.memory[index++] = 0x65;  // ADC $F0
     // state.memory[index++] = 0xF0;
 
-    state.memory[index++] = 0xA2;  // LDX #$01
-    state.memory[index++] = 0x01;
-    state.memory[index++] = 0xA0;  // LDY #$02
-    state.memory[index++] = 0x02;
-    state.memory[index++] = 0x86;  // STX $F0
-    state.memory[index++] = 0xF0;
-    state.memory[index++] = 0x84;  // STY $F1
-    state.memory[index++] = 0xF1;
-    state.memory[index++] = 0x65;  // ADC $F0
-    state.memory[index++] = 0xF0;
-    state.memory[index++] = 0x65;  // ADC $F1
-    state.memory[index++] = 0xF1;
-    state.memory[index++] = 0xE5;  // SBC $F1
-    state.memory[index++] = 0xF1;
-    state.memory[index++] = 0x85;  // STA $F3
-    state.memory[index++] = 0xF3;
-    state.memory[index++] = 0xC4;  // CPY $F3
-    state.memory[index++] = 0xF3;
+    state.memory[0xCDAB] = 0x11;
+    state.memory[index++] = 0x0D;  // ORA $AB $CD
+    state.memory[index++] = 0xAB;
+    state.memory[index++] = 0xCD;
 
     state.program_counter = 0;
     int run_state = 0;
@@ -87,6 +73,7 @@ int main() {
     printf("carry = %d\n", state.carry);
     printf("program_counter = %02X\n", state.program_counter);
     printf("cycles = %lu\n", state.cycles);
+    printf("_tmp_address = %04X\n", state._tmp_address);
     printf("memory F0:F3 = %02X %02X %02X %02X\n", state.memory[0xF0], state.memory[0xF1], state.memory[0xF2], state.memory[0xF3]);
 
     free(state.memory);

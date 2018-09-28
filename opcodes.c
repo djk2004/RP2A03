@@ -19,8 +19,15 @@
 #include "ops/cmp.h"
 #include "ops/sax.h"
 
-int get_zero_page_address(struct State *state) {
-    state->_tmp_address = state->memory[state->program_counter++];
+int get_low_nibble_address(struct State *state) {
+    byte b = state->memory[state->program_counter++];
+    state->_tmp_address = b;  // resets the high nibble to 0x00
+    return 0;
+}
+
+int get_high_nibble_address(struct State *state) {
+    byte b = state->memory[state->program_counter++];
+    state->_tmp_address ^= (b << 8);
     return 0;
 }
 
@@ -47,7 +54,7 @@ instructions unimplemented_opcode = {
 };
 
 instructions ora_zero_page_05 = {
-    get_zero_page_address,
+    get_low_nibble_address,
     ora_memory,
     NULL
 };
@@ -57,21 +64,28 @@ instructions ora_immediate_09 = {
     NULL
 };
 
+instructions ora_absolute_0D = {
+    get_low_nibble_address,
+    get_high_nibble_address,
+    ora_memory,
+    NULL
+};
+
 instructions ora_zero_page_x_15 = {
-    get_zero_page_address,
+    get_low_nibble_address,
     index_zero_page_by_x,
     ora_memory,
     NULL
 };
 
 instructions bit_test_zero_page_24 = {
-    get_zero_page_address,
+    get_low_nibble_address,
     bit_test_zero_page,
     NULL
 };
 
 instructions and_zero_page_25 = {
-    get_zero_page_address,
+    get_low_nibble_address,
     and_memory,
     NULL
 };
@@ -82,14 +96,14 @@ instructions and_immediate_29 = {
 };
 
 instructions and_zero_page_x_35 = {
-    get_zero_page_address,
+    get_low_nibble_address,
     index_zero_page_by_x,
     and_memory,
     NULL
 };
 
 instructions eor_zero_page_45 = {
-    get_zero_page_address,
+    get_low_nibble_address,
     eor_memory,
     NULL
 };
@@ -100,14 +114,14 @@ instructions eor_immediate_49 = {
 };
 
 instructions eor_zero_page_x_55 = {
-    get_zero_page_address,
+    get_low_nibble_address,
     index_zero_page_by_x,
     eor_memory,
     NULL
 };
 
 instructions adc_zero_page_65 = {
-    get_zero_page_address,
+    get_low_nibble_address,
     adc_memory,
     NULL
 };
@@ -118,59 +132,59 @@ instructions adc_immediate_69 = {
 };
 
 instructions adc_zero_page_x_75 = {
-    get_zero_page_address,
+    get_low_nibble_address,
     index_zero_page_by_x,
     adc_memory,
     NULL
 };
 
 instructions sty_zero_page_84 = {
-    get_zero_page_address,
+    get_low_nibble_address,
     sty,
     NULL
 };
 
 instructions sta_zero_page_85 = {
-    get_zero_page_address,
+    get_low_nibble_address,
     sta,
     NULL
 };
 
 instructions stx_zero_page_86 = {
-    get_zero_page_address,
+    get_low_nibble_address,
     stx,
     NULL
 };
 
 instructions sax_zero_page_87 = {
-    get_zero_page_address,
+    get_low_nibble_address,
     sax,
     NULL
 };
 
 instructions sty_zero_page_x_94 = {
-    get_zero_page_address,
+    get_low_nibble_address,
     index_zero_page_by_x,
     sty,
     NULL
 };
 
 instructions sta_zero_page_x_95 = {
-    get_zero_page_address,
+    get_low_nibble_address,
     index_zero_page_by_x,
     sta,
     NULL
 };
 
 instructions stx_zero_page_y_96 = {
-    get_zero_page_address,
+    get_low_nibble_address,
     index_zero_page_by_y,
     stx,
     NULL
 };
 
 instructions sax_zero_page_y_97 = {
-    get_zero_page_address,
+    get_low_nibble_address,
     index_zero_page_by_y,
     sax,
     NULL
@@ -187,13 +201,13 @@ instructions ldx_immediate_A2 = {
 };
 
 instructions ldy_zero_page_A4 = {
-    get_zero_page_address,
+    get_low_nibble_address,
     ldy_memory,
     NULL
 };
 
 instructions lda_zero_page_A5 = {
-    get_zero_page_address,
+    get_low_nibble_address,
     lda_memory,
     NULL
 };
@@ -204,27 +218,27 @@ instructions lda_immediate_A9 = {
 };
 
 instructions ldx_zero_page_A6 = {
-    get_zero_page_address,
+    get_low_nibble_address,
     ldx_memory,
     NULL
 };
 
 instructions ldy_zero_page_x_B4 = {
-    get_zero_page_address,
+    get_low_nibble_address,
     index_zero_page_by_x,
     ldy_memory,
     NULL
 };
 
 instructions lda_zero_page_x_B5 = {
-    get_zero_page_address,
+    get_low_nibble_address,
     index_zero_page_by_x,
     lda_memory,
     NULL
 };
 
 instructions ldx_zero_page_x_B6 = {
-    get_zero_page_address,
+    get_low_nibble_address,
     index_zero_page_by_y,
     ldx_memory,
     NULL
@@ -236,13 +250,13 @@ instructions cpy_immediate_C0 = {
 };
 
 instructions cpy_C4 = {
-    get_zero_page_address,
+    get_low_nibble_address,
     cpy_zero_page,
     NULL
 };
 
 instructions cmp_zero_page_C5 = {
-    get_zero_page_address,
+    get_low_nibble_address,
     cmp_memory,
     NULL
 };
@@ -253,7 +267,7 @@ instructions cmp_immediate_C9 = {
 };
 
 instructions cmp_zero_page_x_D5 = {
-    get_zero_page_address,
+    get_low_nibble_address,
     index_zero_page_by_x,
     cmp_memory,
     NULL
@@ -265,13 +279,13 @@ instructions cpx_immediate_E0 = {
 };
 
 instructions cpx_E4 = {
-    get_zero_page_address,
+    get_low_nibble_address,
     cpx_zero_page,
     NULL
 };
 
 instructions sbc_zero_page_E5 = {
-    get_zero_page_address,
+    get_low_nibble_address,
     sbc_memory,
     NULL
 };
@@ -282,7 +296,7 @@ instructions sbc_immediate_E9 = {
 };
 
 instructions sbc_zero_page_x_F5 = {
-    get_zero_page_address,
+    get_low_nibble_address,
     index_zero_page_by_x,
     sbc_memory,
     NULL
@@ -303,7 +317,7 @@ instructions* get_opcode_instructions(byte opcode) {
         case 0x0A: return &unimplemented_opcode;
         case 0x0B: return &unimplemented_opcode;
         case 0x0C: return &unimplemented_opcode;
-        case 0x0D: return &unimplemented_opcode;
+        case 0x0D: return &ora_absolute_0D;
         case 0x0E: return &unimplemented_opcode;
         case 0x0F: return &unimplemented_opcode;
         case 0x10: return &unimplemented_opcode;
