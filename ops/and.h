@@ -4,6 +4,7 @@
 #include "../state.h"
 
 int and_memory(struct State *state);
+int and_immediate(struct State *state);
 
 
 #endif

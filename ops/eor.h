@@ -4,6 +4,7 @@
 #include "../state.h"
 
 int eor_memory(struct State *state);
+int eor_immediate(struct State *state);
 
 
 #endif

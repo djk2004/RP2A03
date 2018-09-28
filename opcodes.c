@@ -52,6 +52,11 @@ instructions ora_zero_page_05 = {
     NULL
 };
 
+instructions ora_immediate_09 = {
+    ora_immediate,
+    NULL
+};
+
 instructions ora_zero_page_x_15 = {
     get_zero_page_address,
     index_zero_page_by_x,
@@ -71,6 +76,11 @@ instructions and_zero_page_25 = {
     NULL
 };
 
+instructions and_immediate_29 = {
+    and_immediate,
+    NULL
+};
+
 instructions and_zero_page_x_35 = {
     get_zero_page_address,
     index_zero_page_by_x,
@@ -84,6 +94,11 @@ instructions eor_zero_page_45 = {
     NULL
 };
 
+instructions eor_immediate_49 = {
+    eor_immediate,
+    NULL
+};
+
 instructions eor_zero_page_x_55 = {
     get_zero_page_address,
     index_zero_page_by_x,
@@ -94,6 +109,11 @@ instructions eor_zero_page_x_55 = {
 instructions adc_zero_page_65 = {
     get_zero_page_address,
     adc_memory,
+    NULL
+};
+
+instructions adc_immediate_69 = {
+    adc_immediate,
     NULL
 };
 
@@ -210,6 +230,11 @@ instructions ldx_zero_page_x_B6 = {
     NULL
 };
 
+instructions cpy_immediate_C0 = {
+    cpy_immediate,
+    NULL
+};
+
 instructions cpy_C4 = {
     get_zero_page_address,
     cpy_zero_page,
@@ -222,10 +247,20 @@ instructions cmp_zero_page_C5 = {
     NULL
 };
 
+instructions cmp_immediate_C9 = {
+    cmp_immediate,
+    NULL
+};
+
 instructions cmp_zero_page_x_D5 = {
     get_zero_page_address,
     index_zero_page_by_x,
     cmp_memory,
+    NULL
+};
+
+instructions cpx_immediate_E0 = {
+    cpx_immediate,
     NULL
 };
 
@@ -238,6 +273,11 @@ instructions cpx_E4 = {
 instructions sbc_zero_page_E5 = {
     get_zero_page_address,
     sbc_memory,
+    NULL
+};
+
+instructions sbc_immediate_E9 = {
+    sbc_immediate,
     NULL
 };
 
@@ -259,7 +299,7 @@ instructions* get_opcode_instructions(byte opcode) {
         case 0x06: return &unimplemented_opcode;
         case 0x07: return &unimplemented_opcode;
         case 0x08: return &unimplemented_opcode;
-        case 0x09: return &unimplemented_opcode;
+        case 0x09: return &ora_immediate_09;
         case 0x0A: return &unimplemented_opcode;
         case 0x0B: return &unimplemented_opcode;
         case 0x0C: return &unimplemented_opcode;
@@ -291,7 +331,7 @@ instructions* get_opcode_instructions(byte opcode) {
         case 0x26: return &unimplemented_opcode;
         case 0x27: return &unimplemented_opcode;
         case 0x28: return &unimplemented_opcode;
-        case 0x29: return &unimplemented_opcode;
+        case 0x29: return &and_immediate_29;
         case 0x2A: return &unimplemented_opcode;
         case 0x2B: return &unimplemented_opcode;
         case 0x2C: return &unimplemented_opcode;
@@ -323,7 +363,7 @@ instructions* get_opcode_instructions(byte opcode) {
         case 0x46: return &unimplemented_opcode;
         case 0x47: return &unimplemented_opcode;
         case 0x48: return &unimplemented_opcode;
-        case 0x49: return &unimplemented_opcode;
+        case 0x49: return &eor_immediate_49;
         case 0x4A: return &unimplemented_opcode;
         case 0x4B: return &unimplemented_opcode;
         case 0x4C: return &unimplemented_opcode;
@@ -355,7 +395,7 @@ instructions* get_opcode_instructions(byte opcode) {
         case 0x66: return &unimplemented_opcode;
         case 0x67: return &unimplemented_opcode;
         case 0x68: return &unimplemented_opcode;
-        case 0x69: return &unimplemented_opcode;
+        case 0x69: return &adc_immediate_69;
         case 0x6A: return &unimplemented_opcode;
         case 0x6B: return &unimplemented_opcode;
         case 0x6C: return &unimplemented_opcode;
@@ -442,7 +482,7 @@ instructions* get_opcode_instructions(byte opcode) {
         case 0xBD: return &unimplemented_opcode;
         case 0xBE: return &unimplemented_opcode;
         case 0xBF: return &unimplemented_opcode;
-        case 0xC0: return &unimplemented_opcode;
+        case 0xC0: return &cpy_immediate_C0;
         case 0xC1: return &unimplemented_opcode;
         case 0xC2: return &unimplemented_opcode;
         case 0xC3: return &unimplemented_opcode;
@@ -451,7 +491,7 @@ instructions* get_opcode_instructions(byte opcode) {
         case 0xC6: return &unimplemented_opcode;
         case 0xC7: return &unimplemented_opcode;
         case 0xC8: return &unimplemented_opcode;
-        case 0xC9: return &unimplemented_opcode;
+        case 0xC9: return &cmp_immediate_C9;
         case 0xCA: return &unimplemented_opcode;
         case 0xCB: return &unimplemented_opcode;
         case 0xCC: return &unimplemented_opcode;
@@ -474,7 +514,7 @@ instructions* get_opcode_instructions(byte opcode) {
         case 0xDD: return &unimplemented_opcode;
         case 0xDE: return &unimplemented_opcode;
         case 0xDF: return &unimplemented_opcode;
-        case 0xE0: return &unimplemented_opcode;
+        case 0xE0: return &cpx_immediate_E0;
         case 0xE1: return &unimplemented_opcode;
         case 0xE2: return &unimplemented_opcode;
         case 0xE3: return &unimplemented_opcode;
@@ -483,7 +523,7 @@ instructions* get_opcode_instructions(byte opcode) {
         case 0xE6: return &unimplemented_opcode;
         case 0xE7: return &unimplemented_opcode;
         case 0xE8: return &unimplemented_opcode;
-        case 0xE9: return &unimplemented_opcode;
+        case 0xE9: return &sbc_immediate_E9;
         case 0xEA: return &unimplemented_opcode;
         case 0xEB: return &unimplemented_opcode;
         case 0xEC: return &unimplemented_opcode;
