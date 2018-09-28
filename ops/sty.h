@@ -3,6 +3,6 @@
 
 #include "../state.h"
 
-int sty(struct State *state);
+int sty_memory(struct State *state);
 
 #endif

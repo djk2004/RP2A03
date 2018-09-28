@@ -3,7 +3,7 @@
 
 #include "../state.h"
 
-int bit_test_zero_page(struct State *state);
+int bit_test_memory(struct State *state);
 
 
 #endif

@@ -10,7 +10,7 @@ int cpx(struct State *state, unsigned short address) {
     return 0;
 }
 
-int cpx_zero_page(struct State *state) {
+int cpx_memory(struct State *state) {
     cpx(state, state->_tmp_address);
     return 0;
 }

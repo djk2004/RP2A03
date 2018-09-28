@@ -1,6 +1,6 @@
 #include "../state.h"
 
-int sty(struct State *state) {
+int sty_memory(struct State *state) {
     state->memory[state->_tmp_address] = state->y;
     return 0;
 }

@@ -3,7 +3,7 @@
 
 #include "../state.h"
 
-int sta(struct State *state);
+int sta_memory(struct State *state);
 
 
 #endif

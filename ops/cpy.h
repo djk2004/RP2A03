@@ -3,7 +3,7 @@
 
 #include "../state.h"
 
-int cpy_zero_page(struct State *state);
+int cpy_memory(struct State *state);
 int cpy_immediate(struct State *state);
 
 

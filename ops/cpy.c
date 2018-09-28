@@ -10,7 +10,7 @@ int cpy(struct State *state, unsigned short address) {
     return 0;
 }
 
-int cpy_zero_page(struct State *state) {
+int cpy_memory(struct State *state) {
     cpy(state, state->_tmp_address);
     return 0;
 }
