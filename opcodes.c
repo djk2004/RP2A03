@@ -43,10 +43,10 @@ int index_zero_page_by_y(struct State *state) {
     return OK;
 }
 
-int index_address_y(struct State *state) {
+int index_address_by_value(struct State *state, byte index) {
     byte low = state->_tmp_address & 0xFF;
     byte high = (state->_tmp_address & 0xFF00) >> 8;
-    struct Result r = add(low, state->y, 0);
+    struct Result r = add(low, index, 0);
     state->_tmp_address = r.result;
     if (r.carry) {
         r = add(high, r.carry, 0);
@@ -55,6 +55,14 @@ int index_address_y(struct State *state) {
     }
     state->_tmp_address |= (high << 8);
     return OK_IGNORE_CYCLE;    
+}
+
+int index_address_x(struct State *state) {
+    return index_address_by_value(state, state->x);   
+}
+
+int index_address_y(struct State *state) {
+    return index_address_by_value(state, state->y);   
 }
 
 int unimplemented(struct State *state) {
@@ -100,6 +108,14 @@ instructions ora_absolute_y_19 = {
     NULL
 };
 
+instructions ora_absolute_x_1D = {
+    get_low_nibble_address,
+    get_high_nibble_address,
+    index_address_x,
+    ora_memory,
+    NULL
+};
+
 instructions bit_test_zero_page_24 = {
     get_low_nibble_address,
     bit_test_memory,
@@ -138,6 +154,22 @@ instructions and_zero_page_x_35 = {
     NULL
 };
 
+instructions and_absolute_y_39 = {
+    get_low_nibble_address,
+    get_high_nibble_address,
+    index_address_y,
+    and_memory,
+    NULL
+};
+
+instructions and_absolute_x_3D = {
+    get_low_nibble_address,
+    get_high_nibble_address,
+    index_address_x,
+    and_memory,
+    NULL
+};
+
 instructions eor_zero_page_45 = {
     get_low_nibble_address,
     eor_memory,
@@ -163,6 +195,22 @@ instructions eor_zero_page_x_55 = {
     NULL
 };
 
+instructions eor_absolute_y_59 = {
+    get_low_nibble_address,
+    get_high_nibble_address,
+    index_address_y,
+    eor_memory,
+    NULL
+};
+
+instructions eor_absolute_x_5D = {
+    get_low_nibble_address,
+    get_high_nibble_address,
+    index_address_x,
+    eor_memory,
+    NULL
+};
+
 instructions adc_zero_page_65 = {
     get_low_nibble_address,
     adc_memory,
@@ -184,6 +232,22 @@ instructions adc_absolute_6D = {
 instructions adc_zero_page_x_75 = {
     get_low_nibble_address,
     index_zero_page_by_x,
+    adc_memory,
+    NULL
+};
+
+instructions adc_absolute_y_79 = {
+    get_low_nibble_address,
+    get_high_nibble_address,
+    index_address_y,
+    adc_memory,
+    NULL
+};
+
+instructions adc_absolute_x_7D = {
+    get_low_nibble_address,
+    get_high_nibble_address,
+    index_address_x,
     adc_memory,
     NULL
 };
@@ -258,6 +322,22 @@ instructions sax_zero_page_y_97 = {
     get_low_nibble_address,
     index_zero_page_by_y,
     sax,
+    NULL
+};
+
+instructions sta_absolute_y_99 = {
+    get_low_nibble_address,
+    get_high_nibble_address,
+    index_address_y,
+    sta_memory,
+    NULL
+};
+
+instructions sta_absolute_x_9D = {
+    get_low_nibble_address,
+    get_high_nibble_address,
+    index_address_x,
+    sta_memory,
     NULL
 };
 
@@ -336,6 +416,38 @@ instructions ldx_zero_page_x_B6 = {
     NULL
 };
 
+instructions lda_absolute_y_B9 = {
+    get_low_nibble_address,
+    get_high_nibble_address,
+    index_address_y,
+    lda_memory,
+    NULL
+};
+
+instructions ldy_absolute_x_BC = {
+    get_low_nibble_address,
+    get_high_nibble_address,
+    index_address_x,
+    ldy_memory,
+    NULL
+};
+
+instructions lda_absolute_x_BD = {
+    get_low_nibble_address,
+    get_high_nibble_address,
+    index_address_x,
+    lda_memory,
+    NULL
+};
+
+instructions ldx_absolute_x_BE = {
+    get_low_nibble_address,
+    get_high_nibble_address,
+    index_address_x,
+    ldx_memory,
+    NULL
+};
+
 instructions cpy_immediate_C0 = {
     cpy_immediate,
     NULL
@@ -375,6 +487,22 @@ instructions cmp_absolute_CD = {
 instructions cmp_zero_page_x_D5 = {
     get_low_nibble_address,
     index_zero_page_by_x,
+    cmp_memory,
+    NULL
+};
+
+instructions cmp_absolute_y_D9 = {
+    get_low_nibble_address,
+    get_high_nibble_address,
+    index_address_y,
+    cmp_memory,
+    NULL
+};
+
+instructions cmp_absolute_x_DD = {
+    get_low_nibble_address,
+    get_high_nibble_address,
+    index_address_x,
     cmp_memory,
     NULL
 };
@@ -422,6 +550,22 @@ instructions sbc_zero_page_x_F5 = {
     NULL
 };
 
+instructions sbc_absolute_y_F9 = {
+    get_low_nibble_address,
+    get_high_nibble_address,
+    index_address_y,
+    sbc_memory,
+    NULL
+};
+
+instructions sbc_absolute_x_FD = {
+    get_low_nibble_address,
+    get_high_nibble_address,
+    index_address_x,
+    sbc_memory,
+    NULL
+};
+
 instructions* get_opcode_instructions(byte opcode) {
     switch (opcode) {
         case 0x00: return &unimplemented_opcode;
@@ -453,7 +597,7 @@ instructions* get_opcode_instructions(byte opcode) {
         case 0x1A: return &unimplemented_opcode;
         case 0x1B: return &unimplemented_opcode;
         case 0x1C: return &unimplemented_opcode;
-        case 0x1D: return &unimplemented_opcode;
+        case 0x1D: return &ora_absolute_x_1D;
         case 0x1E: return &unimplemented_opcode;
         case 0x1F: return &unimplemented_opcode;
         case 0x20: return &unimplemented_opcode;
@@ -481,11 +625,11 @@ instructions* get_opcode_instructions(byte opcode) {
         case 0x36: return &unimplemented_opcode;
         case 0x37: return &unimplemented_opcode;
         case 0x38: return &unimplemented_opcode;
-        case 0x39: return &unimplemented_opcode;
+        case 0x39: return &and_absolute_y_39;
         case 0x3A: return &unimplemented_opcode;
         case 0x3B: return &unimplemented_opcode;
         case 0x3C: return &unimplemented_opcode;
-        case 0x3D: return &unimplemented_opcode;
+        case 0x3D: return &and_absolute_x_3D;
         case 0x3E: return &unimplemented_opcode;
         case 0x3F: return &unimplemented_opcode;
         case 0x40: return &unimplemented_opcode;
@@ -513,11 +657,11 @@ instructions* get_opcode_instructions(byte opcode) {
         case 0x56: return &unimplemented_opcode;
         case 0x57: return &unimplemented_opcode;
         case 0x58: return &unimplemented_opcode;
-        case 0x59: return &unimplemented_opcode;
+        case 0x59: return &eor_absolute_y_59;
         case 0x5A: return &unimplemented_opcode;
         case 0x5B: return &unimplemented_opcode;
         case 0x5C: return &unimplemented_opcode;
-        case 0x5D: return &unimplemented_opcode;
+        case 0x5D: return &eor_absolute_x_5D;
         case 0x5E: return &unimplemented_opcode;
         case 0x5F: return &unimplemented_opcode;
         case 0x60: return &unimplemented_opcode;
@@ -545,11 +689,11 @@ instructions* get_opcode_instructions(byte opcode) {
         case 0x76: return &unimplemented_opcode;
         case 0x77: return &unimplemented_opcode;
         case 0x78: return &unimplemented_opcode;
-        case 0x79: return &unimplemented_opcode;
+        case 0x79: return &adc_absolute_y_79;
         case 0x7A: return &unimplemented_opcode;
         case 0x7B: return &unimplemented_opcode;
         case 0x7C: return &unimplemented_opcode;
-        case 0x7D: return &unimplemented_opcode;
+        case 0x7D: return &adc_absolute_x_7D;
         case 0x7E: return &unimplemented_opcode;
         case 0x7F: return &unimplemented_opcode;
         case 0x80: return &unimplemented_opcode;
@@ -577,11 +721,11 @@ instructions* get_opcode_instructions(byte opcode) {
         case 0x96: return &stx_zero_page_y_96;
         case 0x97: return &sax_zero_page_y_97;
         case 0x98: return &unimplemented_opcode;
-        case 0x99: return &unimplemented_opcode;
+        case 0x99: return &sta_absolute_y_99;
         case 0x9A: return &unimplemented_opcode;
         case 0x9B: return &unimplemented_opcode;
         case 0x9C: return &unimplemented_opcode;
-        case 0x9D: return &unimplemented_opcode;
+        case 0x9D: return &sta_absolute_x_9D;
         case 0x9E: return &unimplemented_opcode;
         case 0x9F: return &unimplemented_opcode;
         case 0xA0: return &ldy_immediate_A0;
@@ -609,12 +753,12 @@ instructions* get_opcode_instructions(byte opcode) {
         case 0xB6: return &ldx_zero_page_x_B6;
         case 0xB7: return &unimplemented_opcode;
         case 0xB8: return &unimplemented_opcode;
-        case 0xB9: return &unimplemented_opcode;
+        case 0xB9: return &lda_absolute_y_B9;
         case 0xBA: return &unimplemented_opcode;
         case 0xBB: return &unimplemented_opcode;
-        case 0xBC: return &unimplemented_opcode;
-        case 0xBD: return &unimplemented_opcode;
-        case 0xBE: return &unimplemented_opcode;
+        case 0xBC: return &ldy_absolute_x_BC;
+        case 0xBD: return &lda_absolute_x_BD;
+        case 0xBE: return &ldx_absolute_x_BE;
         case 0xBF: return &unimplemented_opcode;
         case 0xC0: return &cpy_immediate_C0;
         case 0xC1: return &unimplemented_opcode;
@@ -641,11 +785,11 @@ instructions* get_opcode_instructions(byte opcode) {
         case 0xD6: return &unimplemented_opcode;
         case 0xD7: return &unimplemented_opcode;
         case 0xD8: return &unimplemented_opcode;
-        case 0xD9: return &unimplemented_opcode;
+        case 0xD9: return &cmp_absolute_y_D9;
         case 0xDA: return &unimplemented_opcode;
         case 0xDB: return &unimplemented_opcode;
         case 0xDC: return &unimplemented_opcode;
-        case 0xDD: return &unimplemented_opcode;
+        case 0xDD: return &cmp_absolute_x_DD;
         case 0xDE: return &unimplemented_opcode;
         case 0xDF: return &unimplemented_opcode;
         case 0xE0: return &cpx_immediate_E0;
@@ -673,11 +817,11 @@ instructions* get_opcode_instructions(byte opcode) {
         case 0xF6: return &unimplemented_opcode;
         case 0xF7: return &unimplemented_opcode;
         case 0xF8: return &unimplemented_opcode;
-        case 0xF9: return &unimplemented_opcode;
+        case 0xF9: return &sbc_absolute_y_F9;
         case 0xFA: return &unimplemented_opcode;
         case 0xFB: return &unimplemented_opcode;
         case 0xFC: return &unimplemented_opcode;
-        case 0xFD: return &unimplemented_opcode;
+        case 0xFD: return &sbc_absolute_x_FD;
         case 0xFE: return &unimplemented_opcode;
         case 0xFF: return &unimplemented_opcode;
     }
