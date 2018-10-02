@@ -5,5 +5,5 @@ int bit_test_memory(struct State *state) {
     state->zero = is_zero(state->a & value);
     state->negative = value & BIT_7;
     state->overflow = value & BIT_6;
-    return 0;
+    return OK;
 }

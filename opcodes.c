@@ -22,30 +22,44 @@
 int get_low_nibble_address(struct State *state) {
     byte b = state->memory[state->program_counter++];
     state->_tmp_address = b;  // resets the high nibble to 0x00
-    return 0;
+    return OK;
 }
 
 int get_high_nibble_address(struct State *state) {
     byte b = state->memory[state->program_counter++];
     state->_tmp_address ^= (b << 8);
-    return 0;
+    return OK;
 }
 
 int index_zero_page_by_x(struct State *state) {
     byte t = state->_tmp_address & 0xFF;
     state->_tmp_address = add(t, state->x, 0).result;
-    return 0;
+    return OK;
 }
 
 int index_zero_page_by_y(struct State *state) {
     byte t = state->_tmp_address & 0xFF;
     state->_tmp_address = add(t, state->y, 0).result;
-    return 0;
+    return OK;
+}
+
+int index_address_y(struct State *state) {
+    byte low = state->_tmp_address & 0xFF;
+    byte high = (state->_tmp_address & 0xFF00) >> 8;
+    struct Result r = add(low, state->y, 0);
+    state->_tmp_address = r.result;
+    if (r.carry) {
+        r = add(high, r.carry, 0);
+        state->_tmp_address |= (r.result << 8);
+        return OK;
+    }
+    state->_tmp_address |= (high << 8);
+    return OK_IGNORE_CYCLE;    
 }
 
 int unimplemented(struct State *state) {
     printf("unimplemented opcode\n");
-    return -1;
+    return ERROR;
 }
 
 instructions unimplemented_opcode = {
@@ -74,6 +88,14 @@ instructions ora_absolute_0D = {
 instructions ora_zero_page_x_15 = {
     get_low_nibble_address,
     index_zero_page_by_x,
+    ora_memory,
+    NULL
+};
+
+instructions ora_absolute_y_19 = {
+    get_low_nibble_address,
+    get_high_nibble_address,
+    index_address_y,
     ora_memory,
     NULL
 };
@@ -427,7 +449,7 @@ instructions* get_opcode_instructions(byte opcode) {
         case 0x16: return &unimplemented_opcode;
         case 0x17: return &unimplemented_opcode;
         case 0x18: return &unimplemented_opcode;
-        case 0x19: return &unimplemented_opcode;
+        case 0x19: return &ora_absolute_y_19;
         case 0x1A: return &unimplemented_opcode;
         case 0x1B: return &unimplemented_opcode;
         case 0x1C: return &unimplemented_opcode;

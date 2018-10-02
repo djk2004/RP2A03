@@ -3,6 +3,10 @@
 
 #include "binary.h"
 
+extern const int OK;
+extern const int OK_IGNORE_CYCLE;
+extern const int ERROR;
+
 struct State {
     byte *memory;
     unsigned short program_counter;

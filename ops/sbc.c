@@ -9,15 +9,15 @@ int sbc(struct State *state, unsigned short address) {
     state->overflow = r.overflow;
     state->zero = r.zero;
     state->negative = r.negative;
-    return 0;
+    return OK;
 }
 
 int sbc_memory(struct State *state) {
     sbc(state, state->_tmp_address);
-    return 0;
+    return OK;
 }
 
 int sbc_immediate(struct State *state) {
     sbc(state, state->program_counter++);
-    return 0;
+    return OK;
 }

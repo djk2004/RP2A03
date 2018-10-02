@@ -41,14 +41,16 @@ int main() {
     // state.memory[index++] = 0x65;  // ADC $F0
     // state.memory[index++] = 0xF0;
 
-    state.memory[0xCDAB] = 0x11;
-    state.memory[index++] = 0x0D;  // ORA $AB $CD
+    state.memory[0xCDAC] = 0x10;
+    state.memory[index++] = 0xA0;  // LDY #$56
+    state.memory[index++] = 0x56;
+    state.memory[index++] = 0x19;  // ORA $AB $CD, Y
     state.memory[index++] = 0xAB;
     state.memory[index++] = 0xCD;
 
     state.program_counter = 0;
     int run_state = 0;
-    while (run_state == 0) {
+    while (run_state >= 0) {
         if (state.cycles % INTERRUPT_PERIOD_MS == 0) {
             // TODO: some interrupt tasks here, increment cycles as needed
             state.cycles++;
@@ -58,7 +60,8 @@ int main() {
             instructions *current = get_opcode_instructions(opcode);
             for (int i=0; ((*current)[i]) != NULL; i++) {
                 run_state = ((*current)[i])(&state);
-                state.cycles++;
+                if (run_state == OK_IGNORE_CYCLE)
+                    state.cycles++;
             }
         }
     }
@@ -74,7 +77,7 @@ int main() {
     printf("program_counter = %02X\n", state.program_counter);
     printf("cycles = %lu\n", state.cycles);
     printf("_tmp_address = %04X\n", state._tmp_address);
-    printf("memory F0:F3 = %02X %02X %02X %02X\n", state.memory[0xF0], state.memory[0xF1], state.memory[0xF2], state.memory[0xF3]);
+    // printf("memory F0:F3 = %02X %02X %02X %02X\n", state.memory[0xF0], state.memory[0xF1], state.memory[0xF2], state.memory[0xF3]);
 
     free(state.memory);
     return 0;

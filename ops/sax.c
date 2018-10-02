@@ -6,5 +6,5 @@ int sax(struct State *state) {
     state->memory[state->_tmp_address] = value;
     state->negative = is_negative(value);
     state->zero = is_zero(value);
-    return 0;
+    return OK;
 }

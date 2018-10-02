@@ -7,15 +7,15 @@ int cpy(struct State *state, unsigned short address) {
     state->carry = r.carry;
     state->zero = r.zero;
     state->negative = r.negative;
-    return 0;
+    return OK;
 }
 
 int cpy_memory(struct State *state) {
     cpy(state, state->_tmp_address);
-    return 0;
+    return OK;
 }
 
 int cpy_immediate(struct State *state) {
     cpy(state, state->program_counter++);
-    return 0;
+    return OK;
 }
