@@ -647,7 +647,7 @@ instructions* get_opcode_instructions(byte opcode) {
         case 0xF2: return &unimplemented_opcode;
         case 0xF3: return &unimplemented_opcode;
         case 0xF4: return &unimplemented_opcode;
-        case 0xF5: return &unimplemented_opcode;
+        case 0xF5: return &sbc_zero_page_x_F5;
         case 0xF6: return &unimplemented_opcode;
         case 0xF7: return &unimplemented_opcode;
         case 0xF8: return &unimplemented_opcode;
