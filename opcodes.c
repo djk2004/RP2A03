@@ -65,6 +65,26 @@ int index_address_y(struct State *state) {
     return index_address_by_value(state, state->y);   
 }
 
+int update_address_indirect_x(struct State *state) {
+    byte a = state->_tmp_address & 0xFF;
+    struct Result r = add(a, state->x, 0);
+    state->_tmp_address = r.result;
+    return OK;
+}
+
+int get_indirect_x_low_nibble(struct State *state) {
+    state->_tmp_byte = state->memory[state->_tmp_address];
+    return OK;
+}
+
+int get_indirect_x_high_nibble(struct State *state) {
+    byte low = state->_tmp_address & 0xFF;
+    byte lowPlus1 = add(low, 1, 0).result;
+    byte high = state->memory[lowPlus1];
+    state->_tmp_address = (high << 8) | state->_tmp_byte;
+    return OK;
+}
+
 int unimplemented(struct State *state) {
     printf("unimplemented opcode\n");
     return ERROR;
@@ -72,6 +92,15 @@ int unimplemented(struct State *state) {
 
 instructions unimplemented_opcode = {
     unimplemented,
+    NULL
+};
+
+instructions ora_indirect_x_01 = {
+    get_low_nibble_address,     
+    update_address_indirect_x,
+    get_indirect_x_low_nibble,
+    get_indirect_x_high_nibble,
+    ora_memory,
     NULL
 };
 
@@ -569,7 +598,7 @@ instructions sbc_absolute_x_FD = {
 instructions* get_opcode_instructions(byte opcode) {
     switch (opcode) {
         case 0x00: return &unimplemented_opcode;
-        case 0x01: return &unimplemented_opcode;
+        case 0x01: return &ora_indirect_x_01;
         case 0x02: return &unimplemented_opcode;
         case 0x03: return &unimplemented_opcode;
         case 0x04: return &unimplemented_opcode;

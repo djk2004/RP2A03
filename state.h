@@ -15,7 +15,7 @@ struct State {
     bit carry, zero, interrupt_disable, decimal, break_command, overflow, negative;
 
     // The following are used to store state between cycles
-    unsigned short _tmp_address;
+    unsigned short _tmp_address, _tmp_byte;
 };
 
 #endif

@@ -41,12 +41,12 @@ int main() {
     // state.memory[index++] = 0x65;  // ADC $F0
     // state.memory[index++] = 0xF0;
 
-    state.memory[0xCDAC] = 0x10;
-    state.memory[index++] = 0xA0;  // LDY #$56
-    state.memory[index++] = 0x56;
-    state.memory[index++] = 0x19;  // ORA $AB $CD, Y
-    state.memory[index++] = 0xAB;
-    state.memory[index++] = 0xCD;
+    state.memory[0x0021] = 0x55;
+    state.memory[0x0055] = 0xAA;
+    state.memory[index++] = 0xA2;  // LDX #$01
+    state.memory[index++] = 0x01;
+    state.memory[index++] = 0x01;  // ORA X, #$20
+    state.memory[index++] = 0x20;
 
     state.program_counter = 0;
     int run_state = 0;
