@@ -145,6 +145,15 @@ instructions ora_absolute_x_1D = {
     NULL
 };
 
+instructions and_indirect_x_21 = {
+    get_low_nibble_address,     
+    update_address_indirect_x,
+    get_indirect_x_low_nibble,
+    get_indirect_x_high_nibble,
+    and_memory,
+    NULL
+};
+
 instructions bit_test_zero_page_24 = {
     get_low_nibble_address,
     bit_test_memory,
@@ -199,6 +208,15 @@ instructions and_absolute_x_3D = {
     NULL
 };
 
+instructions eor_indirect_x_41 = {
+    get_low_nibble_address,     
+    update_address_indirect_x,
+    get_indirect_x_low_nibble,
+    get_indirect_x_high_nibble,
+    eor_memory,
+    NULL
+};
+
 instructions eor_zero_page_45 = {
     get_low_nibble_address,
     eor_memory,
@@ -240,6 +258,15 @@ instructions eor_absolute_x_5D = {
     NULL
 };
 
+instructions adc_indirect_x_61 = {
+    get_low_nibble_address,     
+    update_address_indirect_x,
+    get_indirect_x_low_nibble,
+    get_indirect_x_high_nibble,
+    adc_memory,
+    NULL
+};
+
 instructions adc_zero_page_65 = {
     get_low_nibble_address,
     adc_memory,
@@ -278,6 +305,15 @@ instructions adc_absolute_x_7D = {
     get_high_nibble_address,
     index_address_x,
     adc_memory,
+    NULL
+};
+
+instructions sta_indirect_x_81 = {
+    get_low_nibble_address,     
+    update_address_indirect_x,
+    get_indirect_x_low_nibble,
+    get_indirect_x_high_nibble,
+    sta_memory,
     NULL
 };
 
@@ -372,6 +408,15 @@ instructions sta_absolute_x_9D = {
 
 instructions ldy_immediate_A0 = {
     ldy_immediate,
+    NULL
+};
+
+instructions lda_indirect_x_A1 = {
+    get_low_nibble_address,     
+    update_address_indirect_x,
+    get_indirect_x_low_nibble,
+    get_indirect_x_high_nibble,
+    lda_memory,
     NULL
 };
 
@@ -482,6 +527,15 @@ instructions cpy_immediate_C0 = {
     NULL
 };
 
+instructions cmp_indirect_x_C1 = {
+    get_low_nibble_address,     
+    update_address_indirect_x,
+    get_indirect_x_low_nibble,
+    get_indirect_x_high_nibble,
+    cmp_memory,
+    NULL
+};
+
 instructions cpy_C4 = {
     get_low_nibble_address,
     cpy_memory,
@@ -538,6 +592,15 @@ instructions cmp_absolute_x_DD = {
 
 instructions cpx_immediate_E0 = {
     cpx_immediate,
+    NULL
+};
+
+instructions sbc_indirect_x_E1 = {
+    get_low_nibble_address,     
+    update_address_indirect_x,
+    get_indirect_x_low_nibble,
+    get_indirect_x_high_nibble,
+    sbc_memory,
     NULL
 };
 
@@ -630,7 +693,7 @@ instructions* get_opcode_instructions(byte opcode) {
         case 0x1E: return &unimplemented_opcode;
         case 0x1F: return &unimplemented_opcode;
         case 0x20: return &unimplemented_opcode;
-        case 0x21: return &unimplemented_opcode;
+        case 0x21: return &and_indirect_x_21;
         case 0x22: return &unimplemented_opcode;
         case 0x23: return &unimplemented_opcode;
         case 0x24: return &bit_test_zero_page_24;
@@ -662,7 +725,7 @@ instructions* get_opcode_instructions(byte opcode) {
         case 0x3E: return &unimplemented_opcode;
         case 0x3F: return &unimplemented_opcode;
         case 0x40: return &unimplemented_opcode;
-        case 0x41: return &unimplemented_opcode;
+        case 0x41: return &eor_indirect_x_41;
         case 0x42: return &unimplemented_opcode;
         case 0x43: return &unimplemented_opcode;
         case 0x44: return &unimplemented_opcode;
@@ -694,7 +757,7 @@ instructions* get_opcode_instructions(byte opcode) {
         case 0x5E: return &unimplemented_opcode;
         case 0x5F: return &unimplemented_opcode;
         case 0x60: return &unimplemented_opcode;
-        case 0x61: return &unimplemented_opcode;
+        case 0x61: return &adc_indirect_x_61;
         case 0x62: return &unimplemented_opcode;
         case 0x63: return &unimplemented_opcode;
         case 0x64: return &unimplemented_opcode;
@@ -726,7 +789,7 @@ instructions* get_opcode_instructions(byte opcode) {
         case 0x7E: return &unimplemented_opcode;
         case 0x7F: return &unimplemented_opcode;
         case 0x80: return &unimplemented_opcode;
-        case 0x81: return &unimplemented_opcode;
+        case 0x81: return &sta_indirect_x_81;
         case 0x82: return &unimplemented_opcode;
         case 0x83: return &unimplemented_opcode;
         case 0x84: return &sty_zero_page_84;
@@ -758,7 +821,7 @@ instructions* get_opcode_instructions(byte opcode) {
         case 0x9E: return &unimplemented_opcode;
         case 0x9F: return &unimplemented_opcode;
         case 0xA0: return &ldy_immediate_A0;
-        case 0xA1: return &unimplemented_opcode;
+        case 0xA1: return &lda_indirect_x_A1;
         case 0xA2: return &ldx_immediate_A2;
         case 0xA3: return &unimplemented_opcode;
         case 0xA4: return &ldy_zero_page_A4;
@@ -790,7 +853,7 @@ instructions* get_opcode_instructions(byte opcode) {
         case 0xBE: return &ldx_absolute_x_BE;
         case 0xBF: return &unimplemented_opcode;
         case 0xC0: return &cpy_immediate_C0;
-        case 0xC1: return &unimplemented_opcode;
+        case 0xC1: return &cmp_indirect_x_C1;
         case 0xC2: return &unimplemented_opcode;
         case 0xC3: return &unimplemented_opcode;
         case 0xC4: return &cpy_C4;
@@ -822,7 +885,7 @@ instructions* get_opcode_instructions(byte opcode) {
         case 0xDE: return &unimplemented_opcode;
         case 0xDF: return &unimplemented_opcode;
         case 0xE0: return &cpx_immediate_E0;
-        case 0xE1: return &unimplemented_opcode;
+        case 0xE1: return &sbc_indirect_x_E1;
         case 0xE2: return &unimplemented_opcode;
         case 0xE3: return &unimplemented_opcode;
         case 0xE4: return &cpx_E4;
