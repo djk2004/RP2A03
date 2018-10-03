@@ -72,12 +72,12 @@ int update_address_indirect_x(struct State *state) {
     return OK;
 }
 
-int get_indirect_x_low_nibble(struct State *state) {
+int get_indirect_low_nibble(struct State *state) {
     state->_tmp_byte = state->memory[state->_tmp_address];
     return OK;
 }
 
-int get_indirect_x_high_nibble(struct State *state) {
+int get_indirect_high_nibble(struct State *state) {
     byte low = state->_tmp_address & 0xFF;
     byte lowPlus1 = add(low, 1, 0).result;
     byte high = state->memory[lowPlus1];
@@ -98,8 +98,8 @@ instructions unimplemented_opcode = {
 instructions ora_indirect_x_01 = {
     get_low_nibble_address,     
     update_address_indirect_x,
-    get_indirect_x_low_nibble,
-    get_indirect_x_high_nibble,
+    get_indirect_low_nibble,
+    get_indirect_high_nibble,
     ora_memory,
     NULL
 };
@@ -112,6 +112,15 @@ instructions ora_zero_page_05 = {
 
 instructions ora_immediate_09 = {
     ora_immediate,
+    NULL
+};
+
+instructions ora_indirect_y_11 = {
+    get_low_nibble_address,
+    get_indirect_low_nibble,
+    get_indirect_high_nibble,
+    index_address_y,
+    ora_memory,
     NULL
 };
 
@@ -148,8 +157,8 @@ instructions ora_absolute_x_1D = {
 instructions and_indirect_x_21 = {
     get_low_nibble_address,     
     update_address_indirect_x,
-    get_indirect_x_low_nibble,
-    get_indirect_x_high_nibble,
+    get_indirect_low_nibble,
+    get_indirect_high_nibble,
     and_memory,
     NULL
 };
@@ -211,8 +220,8 @@ instructions and_absolute_x_3D = {
 instructions eor_indirect_x_41 = {
     get_low_nibble_address,     
     update_address_indirect_x,
-    get_indirect_x_low_nibble,
-    get_indirect_x_high_nibble,
+    get_indirect_low_nibble,
+    get_indirect_high_nibble,
     eor_memory,
     NULL
 };
@@ -261,8 +270,8 @@ instructions eor_absolute_x_5D = {
 instructions adc_indirect_x_61 = {
     get_low_nibble_address,     
     update_address_indirect_x,
-    get_indirect_x_low_nibble,
-    get_indirect_x_high_nibble,
+    get_indirect_low_nibble,
+    get_indirect_high_nibble,
     adc_memory,
     NULL
 };
@@ -311,8 +320,8 @@ instructions adc_absolute_x_7D = {
 instructions sta_indirect_x_81 = {
     get_low_nibble_address,     
     update_address_indirect_x,
-    get_indirect_x_low_nibble,
-    get_indirect_x_high_nibble,
+    get_indirect_low_nibble,
+    get_indirect_high_nibble,
     sta_memory,
     NULL
 };
@@ -414,8 +423,8 @@ instructions ldy_immediate_A0 = {
 instructions lda_indirect_x_A1 = {
     get_low_nibble_address,     
     update_address_indirect_x,
-    get_indirect_x_low_nibble,
-    get_indirect_x_high_nibble,
+    get_indirect_low_nibble,
+    get_indirect_high_nibble,
     lda_memory,
     NULL
 };
@@ -530,8 +539,8 @@ instructions cpy_immediate_C0 = {
 instructions cmp_indirect_x_C1 = {
     get_low_nibble_address,     
     update_address_indirect_x,
-    get_indirect_x_low_nibble,
-    get_indirect_x_high_nibble,
+    get_indirect_low_nibble,
+    get_indirect_high_nibble,
     cmp_memory,
     NULL
 };
@@ -598,8 +607,8 @@ instructions cpx_immediate_E0 = {
 instructions sbc_indirect_x_E1 = {
     get_low_nibble_address,     
     update_address_indirect_x,
-    get_indirect_x_low_nibble,
-    get_indirect_x_high_nibble,
+    get_indirect_low_nibble,
+    get_indirect_high_nibble,
     sbc_memory,
     NULL
 };
@@ -677,7 +686,7 @@ instructions* get_opcode_instructions(byte opcode) {
         case 0x0E: return &unimplemented_opcode;
         case 0x0F: return &unimplemented_opcode;
         case 0x10: return &unimplemented_opcode;
-        case 0x11: return &unimplemented_opcode;
+        case 0x11: return &ora_indirect_y_11;
         case 0x12: return &unimplemented_opcode;
         case 0x13: return &unimplemented_opcode;
         case 0x14: return &unimplemented_opcode;

@@ -43,9 +43,11 @@ int main() {
 
     state.memory[0x0021] = 0x55;
     state.memory[0x0055] = 0xAA;
-    state.memory[index++] = 0xA2;  // LDX #$01
-    state.memory[index++] = 0x01;
-    state.memory[index++] = 0x01;  // ORA X, #$20
+    state.memory[0x5502] = 0xFF;
+    
+    state.memory[index++] = 0xA0;  // LDY #$02
+    state.memory[index++] = 0x02;
+    state.memory[index++] = 0x11;  // ORA #$20, Y
     state.memory[index++] = 0x20;
 
     state.program_counter = 0;
