@@ -4,7 +4,7 @@
 #include "state.h"
 #include "binary.h"
 
-typedef int (*instructions[])(struct State*);
-instructions* get_opcode_instructions(byte opcode);
+typedef int (*instructions)(struct State*);
+void get_opcode_instructions(instructions *ops, byte opcode);
 
 #endif

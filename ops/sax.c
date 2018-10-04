@@ -1,7 +1,7 @@
 #include "../state.h"
 #include "../binary.h"
 
-int sax(struct State *state) {
+int sax_memory(struct State *state) {
     byte value = state->x & state->a;
     state->memory[state->_tmp_address] = value;
     state->negative = is_negative(value);

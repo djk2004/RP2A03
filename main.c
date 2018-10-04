@@ -45,9 +45,9 @@ int main() {
     state.memory[0x0055] = 0xAA;
     state.memory[0x5502] = 0xFF;
     
-    state.memory[index++] = 0xA0;  // LDY #$02
-    state.memory[index++] = 0x02;
-    state.memory[index++] = 0x11;  // ORA #$20, Y
+    state.memory[index++] = 0xA2;  // LDX #$01
+    state.memory[index++] = 0x01;
+    state.memory[index++] = 0x01;  // ORA X, #$20
     state.memory[index++] = 0x20;
 
     state.program_counter = 0;
@@ -59,12 +59,16 @@ int main() {
         } else {
             byte opcode = state.memory[state.program_counter++];
             state.cycles++;
-            instructions *current = get_opcode_instructions(opcode);
-            for (int i=0; ((*current)[i]) != NULL; i++) {
-                run_state = ((*current)[i])(&state);
+            instructions *current = (instructions*)malloc(sizeof(instructions*) * 8);
+            get_opcode_instructions(current, opcode);
+            for (int i=0; (current[i]) != NULL; i++) {
+                run_state = (current[i])(&state);
                 if (run_state == OK_IGNORE_CYCLE)
                     state.cycles++;
+                else if (run_state == ERROR)
+                    break;
             }
+            free(current);
         }
     }
 

@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "opcodes.h"
 #include "binary.h"
 #include "state.h"
@@ -85,909 +86,340 @@ int get_indirect_high_nibble(struct State *state) {
     return OK;
 }
 
-int unimplemented(struct State *state) {
+int unimplemented_message(struct State *state) {
     printf("unimplemented opcode %02X\n", state->memory[state->program_counter - 1]);
     return ERROR;
 }
 
-instructions unimplemented_opcode = {
-    unimplemented,
-    NULL
-};
-
-instructions ora_indirect_x_01 = {
-    get_low_nibble_address,     
-    update_address_indirect_x,
-    get_indirect_low_nibble,
-    get_indirect_high_nibble,
-    ora_memory,
-    NULL
-};
-
-instructions ora_zero_page_05 = {
-    get_low_nibble_address,
-    ora_memory,
-    NULL
-};
-
-instructions ora_immediate_09 = {
-    ora_immediate,
-    NULL
-};
-
-instructions ora_indirect_y_11 = {
-    get_low_nibble_address,
-    get_indirect_low_nibble,
-    get_indirect_high_nibble,
-    index_address_y,
-    ora_memory,
-    NULL
-};
-
-instructions ora_absolute_0D = {
-    get_low_nibble_address,
-    get_high_nibble_address,
-    ora_memory,
-    NULL
-};
-
-instructions ora_zero_page_x_15 = {
-    get_low_nibble_address,
-    index_zero_page_by_x,
-    ora_memory,
-    NULL
-};
-
-instructions ora_absolute_y_19 = {
-    get_low_nibble_address,
-    get_high_nibble_address,
-    index_address_y,
-    ora_memory,
-    NULL
-};
-
-instructions ora_absolute_x_1D = {
-    get_low_nibble_address,
-    get_high_nibble_address,
-    index_address_x,
-    ora_memory,
-    NULL
-};
-
-instructions and_indirect_x_21 = {
-    get_low_nibble_address,     
-    update_address_indirect_x,
-    get_indirect_low_nibble,
-    get_indirect_high_nibble,
-    and_memory,
-    NULL
-};
-
-instructions bit_test_zero_page_24 = {
-    get_low_nibble_address,
-    bit_test_memory,
-    NULL
-};
-
-instructions and_zero_page_25 = {
-    get_low_nibble_address,
-    and_memory,
-    NULL
-};
-
-instructions and_immediate_29 = {
-    and_immediate,
-    NULL
-};
-
-instructions bit_test_absolute_2C = {
-    get_low_nibble_address,
-    get_high_nibble_address,
-    bit_test_memory,
-    NULL
-};
-
-instructions and_absolute_2D = {
-    get_low_nibble_address,
-    get_high_nibble_address,
-    and_memory,
-    NULL
-};
-
-instructions and_indirect_y_31 = {
-    get_low_nibble_address,
-    get_indirect_low_nibble,
-    get_indirect_high_nibble,
-    index_address_y,
-    and_memory,
-    NULL
-};
-
-instructions and_zero_page_x_35 = {
-    get_low_nibble_address,
-    index_zero_page_by_x,
-    and_memory,
-    NULL
-};
-
-instructions and_absolute_y_39 = {
-    get_low_nibble_address,
-    get_high_nibble_address,
-    index_address_y,
-    and_memory,
-    NULL
-};
-
-instructions and_absolute_x_3D = {
-    get_low_nibble_address,
-    get_high_nibble_address,
-    index_address_x,
-    and_memory,
-    NULL
-};
-
-instructions eor_indirect_x_41 = {
-    get_low_nibble_address,     
-    update_address_indirect_x,
-    get_indirect_low_nibble,
-    get_indirect_high_nibble,
-    eor_memory,
-    NULL
-};
-
-instructions eor_zero_page_45 = {
-    get_low_nibble_address,
-    eor_memory,
-    NULL
-};
-
-instructions eor_immediate_49 = {
-    eor_immediate,
-    NULL
-};
-
-instructions eor_absolute_4D = {
-    get_low_nibble_address,
-    get_high_nibble_address,
-    eor_memory,
-    NULL
-};
-
-instructions eor_indirect_y_51 = {
-    get_low_nibble_address,
-    get_indirect_low_nibble,
-    get_indirect_high_nibble,
-    index_address_y,
-    eor_memory,
-    NULL
-};
-
-instructions eor_zero_page_x_55 = {
-    get_low_nibble_address,
-    index_zero_page_by_x,
-    eor_memory,
-    NULL
-};
-
-instructions eor_absolute_y_59 = {
-    get_low_nibble_address,
-    get_high_nibble_address,
-    index_address_y,
-    eor_memory,
-    NULL
-};
-
-instructions eor_absolute_x_5D = {
-    get_low_nibble_address,
-    get_high_nibble_address,
-    index_address_x,
-    eor_memory,
-    NULL
-};
-
-instructions adc_indirect_x_61 = {
-    get_low_nibble_address,     
-    update_address_indirect_x,
-    get_indirect_low_nibble,
-    get_indirect_high_nibble,
-    adc_memory,
-    NULL
-};
-
-instructions adc_zero_page_65 = {
-    get_low_nibble_address,
-    adc_memory,
-    NULL
-};
-
-instructions adc_immediate_69 = {
-    adc_immediate,
-    NULL
-};
-
-instructions adc_absolute_6D = {
-    get_low_nibble_address,
-    get_high_nibble_address,
-    adc_memory,
-    NULL
-};
-
-instructions adc_indirect_y_71 = {
-    get_low_nibble_address,
-    get_indirect_low_nibble,
-    get_indirect_high_nibble,
-    index_address_y,
-    adc_memory,
-    NULL
-};
-
-instructions adc_zero_page_x_75 = {
-    get_low_nibble_address,
-    index_zero_page_by_x,
-    adc_memory,
-    NULL
-};
-
-instructions adc_absolute_y_79 = {
-    get_low_nibble_address,
-    get_high_nibble_address,
-    index_address_y,
-    adc_memory,
-    NULL
-};
-
-instructions adc_absolute_x_7D = {
-    get_low_nibble_address,
-    get_high_nibble_address,
-    index_address_x,
-    adc_memory,
-    NULL
-};
-
-instructions sta_indirect_x_81 = {
-    get_low_nibble_address,     
-    update_address_indirect_x,
-    get_indirect_low_nibble,
-    get_indirect_high_nibble,
-    sta_memory,
-    NULL
-};
-
-instructions sty_zero_page_84 = {
-    get_low_nibble_address,
-    sty_memory,
-    NULL
-};
-
-instructions sta_zero_page_85 = {
-    get_low_nibble_address,
-    sta_memory,
-    NULL
-};
-
-instructions stx_zero_page_86 = {
-    get_low_nibble_address,
-    stx_memory,
-    NULL
-};
-
-instructions sax_zero_page_87 = {
-    get_low_nibble_address,
-    sax,
-    NULL
-};
-
-instructions sty_absolute_8C = {
-    get_low_nibble_address,
-    get_high_nibble_address,
-    sty_memory,
-    NULL
-};
-
-instructions sta_absolute_8D = {
-    get_low_nibble_address,
-    get_high_nibble_address,
-    sta_memory,
-    NULL
-};
-
-instructions stx_absolute_8E = {
-    get_low_nibble_address,
-    get_high_nibble_address,
-    stx_memory,
-    NULL
-};
-
-instructions sta_indirect_y_91 = {
-    get_low_nibble_address,
-    get_indirect_low_nibble,
-    get_indirect_high_nibble,
-    index_address_y,
-    sta_memory,
-    NULL
-};
-
-instructions sty_zero_page_x_94 = {
-    get_low_nibble_address,
-    index_zero_page_by_x,
-    sty_memory,
-    NULL
-};
-
-instructions sta_zero_page_x_95 = {
-    get_low_nibble_address,
-    index_zero_page_by_x,
-    sta_memory,
-    NULL
-};
-
-instructions stx_zero_page_y_96 = {
-    get_low_nibble_address,
-    index_zero_page_by_y,
-    stx_memory,
-    NULL
-};
-
-instructions sax_zero_page_y_97 = {
-    get_low_nibble_address,
-    index_zero_page_by_y,
-    sax,
-    NULL
-};
-
-instructions sta_absolute_y_99 = {
-    get_low_nibble_address,
-    get_high_nibble_address,
-    index_address_y,
-    sta_memory,
-    NULL
-};
-
-instructions sta_absolute_x_9D = {
-    get_low_nibble_address,
-    get_high_nibble_address,
-    index_address_x,
-    sta_memory,
-    NULL
-};
-
-instructions ldy_immediate_A0 = {
-    ldy_immediate,
-    NULL
-};
-
-instructions lda_indirect_x_A1 = {
-    get_low_nibble_address,     
-    update_address_indirect_x,
-    get_indirect_low_nibble,
-    get_indirect_high_nibble,
-    lda_memory,
-    NULL
-};
-
-instructions ldx_immediate_A2 = {
-    ldx_immediate,
-    NULL
-};
-
-instructions ldy_zero_page_A4 = {
-    get_low_nibble_address,
-    ldy_memory,
-    NULL
-};
-
-instructions lda_zero_page_A5 = {
-    get_low_nibble_address,
-    lda_memory,
-    NULL
-};
-
-instructions lda_immediate_A9 = {
-    lda_immediate,
-    NULL
-};
-
-instructions ldx_zero_page_A6 = {
-    get_low_nibble_address,
-    ldx_memory,
-    NULL
-};
-
-instructions ldy_absolute_AC = {
-    get_low_nibble_address,
-    get_high_nibble_address,
-    ldy_memory,
-    NULL
-};
-
-instructions lda_absolute_AD = {
-    get_low_nibble_address,
-    get_high_nibble_address,
-    lda_memory,
-    NULL
-};
-
-instructions ldx_absolute_AE = {
-    get_low_nibble_address,
-    get_high_nibble_address,
-    ldx_memory,
-    NULL
-};
-
-instructions lda_indirect_y_B1 = {
-    get_low_nibble_address,
-    get_indirect_low_nibble,
-    get_indirect_high_nibble,
-    index_address_y,
-    lda_memory,
-    NULL
-};
-
-instructions ldy_zero_page_x_B4 = {
-    get_low_nibble_address,
-    index_zero_page_by_x,
-    ldy_memory,
-    NULL
-};
-
-instructions lda_zero_page_x_B5 = {
-    get_low_nibble_address,
-    index_zero_page_by_x,
-    lda_memory,
-    NULL
-};
-
-instructions ldx_zero_page_x_B6 = {
-    get_low_nibble_address,
-    index_zero_page_by_y,
-    ldx_memory,
-    NULL
-};
-
-instructions lda_absolute_y_B9 = {
-    get_low_nibble_address,
-    get_high_nibble_address,
-    index_address_y,
-    lda_memory,
-    NULL
-};
-
-instructions ldy_absolute_x_BC = {
-    get_low_nibble_address,
-    get_high_nibble_address,
-    index_address_x,
-    ldy_memory,
-    NULL
-};
-
-instructions lda_absolute_x_BD = {
-    get_low_nibble_address,
-    get_high_nibble_address,
-    index_address_x,
-    lda_memory,
-    NULL
-};
-
-instructions ldx_absolute_x_BE = {
-    get_low_nibble_address,
-    get_high_nibble_address,
-    index_address_x,
-    ldx_memory,
-    NULL
-};
-
-instructions cpy_immediate_C0 = {
-    cpy_immediate,
-    NULL
-};
-
-instructions cmp_indirect_x_C1 = {
-    get_low_nibble_address,     
-    update_address_indirect_x,
-    get_indirect_low_nibble,
-    get_indirect_high_nibble,
-    cmp_memory,
-    NULL
-};
-
-instructions cpy_C4 = {
-    get_low_nibble_address,
-    cpy_memory,
-    NULL
-};
-
-instructions cmp_zero_page_C5 = {
-    get_low_nibble_address,
-    cmp_memory,
-    NULL
-};
-
-instructions cmp_immediate_C9 = {
-    cmp_immediate,
-    NULL
-};
-
-instructions cpy_absolute_CC = {
-    get_low_nibble_address,
-    get_high_nibble_address,
-    cpy_memory,
-    NULL
-};
-
-instructions cmp_absolute_CD = {
-    get_low_nibble_address,
-    get_high_nibble_address,
-    cmp_memory,
-    NULL
-};
-
-instructions cmp_indirect_y_D1 = {
-    get_low_nibble_address,
-    get_indirect_low_nibble,
-    get_indirect_high_nibble,
-    index_address_y,
-    cmp_memory,
-    NULL
-};
-
-instructions cmp_zero_page_x_D5 = {
-    get_low_nibble_address,
-    index_zero_page_by_x,
-    cmp_memory,
-    NULL
-};
-
-instructions cmp_absolute_y_D9 = {
-    get_low_nibble_address,
-    get_high_nibble_address,
-    index_address_y,
-    cmp_memory,
-    NULL
-};
-
-instructions cmp_absolute_x_DD = {
-    get_low_nibble_address,
-    get_high_nibble_address,
-    index_address_x,
-    cmp_memory,
-    NULL
-};
-
-instructions cpx_immediate_E0 = {
-    cpx_immediate,
-    NULL
-};
-
-instructions sbc_indirect_x_E1 = {
-    get_low_nibble_address,     
-    update_address_indirect_x,
-    get_indirect_low_nibble,
-    get_indirect_high_nibble,
-    sbc_memory,
-    NULL
-};
-
-instructions cpx_E4 = {
-    get_low_nibble_address,
-    cpx_memory,
-    NULL
-};
-
-instructions sbc_zero_page_E5 = {
-    get_low_nibble_address,
-    sbc_memory,
-    NULL
-};
-
-instructions sbc_immediate_E9 = {
-    sbc_immediate,
-    NULL
-};
-
-instructions cpx_absolute_EC = {
-    get_low_nibble_address,
-    get_high_nibble_address,
-    cpx_memory,
-    NULL
-};
-
-instructions sbc_absolute_ED = {
-    get_low_nibble_address,
-    get_high_nibble_address,
-    sbc_memory,
-    NULL
-};
-
-instructions sbc_indirect_y_F1 = {
-    get_low_nibble_address,
-    get_indirect_low_nibble,
-    get_indirect_high_nibble,
-    index_address_y,
-    sbc_memory,
-    NULL
-};
-
-instructions sbc_zero_page_x_F5 = {
-    get_low_nibble_address,
-    index_zero_page_by_x,
-    sbc_memory,
-    NULL
-};
-
-instructions sbc_absolute_y_F9 = {
-    get_low_nibble_address,
-    get_high_nibble_address,
-    index_address_y,
-    sbc_memory,
-    NULL
-};
-
-instructions sbc_absolute_x_FD = {
-    get_low_nibble_address,
-    get_high_nibble_address,
-    index_address_x,
-    sbc_memory,
-    NULL
-};
-
-instructions* get_opcode_instructions(byte opcode) {
+void unimplemented(instructions *ops) {
+    ops[0] = unimplemented_message;
+    ops[1] = NULL;
+}
+
+void indirect_x(instructions *ops, int f(struct State *state)) {
+    ops[0] = get_low_nibble_address;
+    ops[1] = update_address_indirect_x;
+    ops[2] = get_indirect_low_nibble;
+    ops[3] = get_indirect_high_nibble;
+    ops[4] = f;
+    ops[5] = NULL;
+}
+
+void zero_page(instructions *ops, int f(struct State *state)) {
+    ops[0] = get_low_nibble_address;
+    ops[1] = f;
+    ops[2] = NULL;
+}
+
+void immediate(instructions *ops, int f(struct State *state)) {
+    ops[0] = f;
+    ops[1] = NULL;
+}
+
+void indirect_y(instructions *ops, int f(struct State *state)) {
+    ops[0] = get_low_nibble_address;
+    ops[1] = get_indirect_low_nibble;
+    ops[2] = get_indirect_high_nibble;
+    ops[3] = index_address_y;
+    ops[4] = f;
+    ops[5] = NULL;
+}
+
+void absolute(instructions *ops, int f(struct State *state)) {
+    ops[0] = get_low_nibble_address;
+    ops[1] = get_high_nibble_address;
+    ops[2] = f;
+    ops[3] = NULL;
+}
+
+void absolute_y(instructions *ops, int f(struct State *state)) {
+    ops[0] = get_low_nibble_address;
+    ops[1] = get_high_nibble_address;
+    ops[2] = index_address_y;
+    ops[3] = f;
+    ops[4] = NULL;
+}
+
+void absolute_x(instructions *ops, int f(struct State *state)) {
+    ops[0] = get_low_nibble_address;
+    ops[1] = get_high_nibble_address;
+    ops[2] = index_address_x;
+    ops[3] = f;
+    ops[4] = NULL;
+}
+
+void zero_page_x_indexed(instructions *ops, int f(struct State *state)) {
+    ops[0] = get_low_nibble_address;
+    ops[1] = index_zero_page_by_x;
+    ops[2] = f;
+    ops[3] = NULL;
+}
+
+void zero_page_y_indexed(instructions *ops, int f(struct State *state)) {
+    ops[0] = get_low_nibble_address;
+    ops[1] = index_zero_page_by_y;
+    ops[2] = f;
+    ops[3] = NULL;
+}
+
+void get_opcode_instructions(instructions *ops, byte opcode) {
     switch (opcode) {
-        case 0x00: return &unimplemented_opcode;
-        case 0x01: return &ora_indirect_x_01;
-        case 0x02: return &unimplemented_opcode;
-        case 0x03: return &unimplemented_opcode;
-        case 0x04: return &unimplemented_opcode;
-        case 0x05: return &ora_zero_page_05;
-        case 0x06: return &unimplemented_opcode;
-        case 0x07: return &unimplemented_opcode;
-        case 0x08: return &unimplemented_opcode;
-        case 0x09: return &ora_immediate_09;
-        case 0x0A: return &unimplemented_opcode;
-        case 0x0B: return &unimplemented_opcode;
-        case 0x0C: return &unimplemented_opcode;
-        case 0x0D: return &ora_absolute_0D;
-        case 0x0E: return &unimplemented_opcode;
-        case 0x0F: return &unimplemented_opcode;
-        case 0x10: return &unimplemented_opcode;
-        case 0x11: return &ora_indirect_y_11;
-        case 0x12: return &unimplemented_opcode;
-        case 0x13: return &unimplemented_opcode;
-        case 0x14: return &unimplemented_opcode;
-        case 0x15: return &ora_zero_page_x_15;
-        case 0x16: return &unimplemented_opcode;
-        case 0x17: return &unimplemented_opcode;
-        case 0x18: return &unimplemented_opcode;
-        case 0x19: return &ora_absolute_y_19;
-        case 0x1A: return &unimplemented_opcode;
-        case 0x1B: return &unimplemented_opcode;
-        case 0x1C: return &unimplemented_opcode;
-        case 0x1D: return &ora_absolute_x_1D;
-        case 0x1E: return &unimplemented_opcode;
-        case 0x1F: return &unimplemented_opcode;
-        case 0x20: return &unimplemented_opcode;
-        case 0x21: return &and_indirect_x_21;
-        case 0x22: return &unimplemented_opcode;
-        case 0x23: return &unimplemented_opcode;
-        case 0x24: return &bit_test_zero_page_24;
-        case 0x25: return &and_zero_page_25;
-        case 0x26: return &unimplemented_opcode;
-        case 0x27: return &unimplemented_opcode;
-        case 0x28: return &unimplemented_opcode;
-        case 0x29: return &and_immediate_29;
-        case 0x2A: return &unimplemented_opcode;
-        case 0x2B: return &unimplemented_opcode;
-        case 0x2C: return &bit_test_absolute_2C;
-        case 0x2D: return &and_absolute_2D;
-        case 0x2E: return &unimplemented_opcode;
-        case 0x2F: return &unimplemented_opcode;
-        case 0x30: return &unimplemented_opcode;
-        case 0x31: return &and_indirect_y_31;
-        case 0x32: return &unimplemented_opcode;
-        case 0x33: return &unimplemented_opcode;
-        case 0x34: return &unimplemented_opcode;
-        case 0x35: return &and_zero_page_x_35;
-        case 0x36: return &unimplemented_opcode;
-        case 0x37: return &unimplemented_opcode;
-        case 0x38: return &unimplemented_opcode;
-        case 0x39: return &and_absolute_y_39;
-        case 0x3A: return &unimplemented_opcode;
-        case 0x3B: return &unimplemented_opcode;
-        case 0x3C: return &unimplemented_opcode;
-        case 0x3D: return &and_absolute_x_3D;
-        case 0x3E: return &unimplemented_opcode;
-        case 0x3F: return &unimplemented_opcode;
-        case 0x40: return &unimplemented_opcode;
-        case 0x41: return &eor_indirect_x_41;
-        case 0x42: return &unimplemented_opcode;
-        case 0x43: return &unimplemented_opcode;
-        case 0x44: return &unimplemented_opcode;
-        case 0x45: return &eor_zero_page_45;
-        case 0x46: return &unimplemented_opcode;
-        case 0x47: return &unimplemented_opcode;
-        case 0x48: return &unimplemented_opcode;
-        case 0x49: return &eor_immediate_49;
-        case 0x4A: return &unimplemented_opcode;
-        case 0x4B: return &unimplemented_opcode;
-        case 0x4C: return &unimplemented_opcode;
-        case 0x4D: return &eor_absolute_4D;
-        case 0x4E: return &unimplemented_opcode;
-        case 0x4F: return &unimplemented_opcode;
-        case 0x50: return &unimplemented_opcode;
-        case 0x51: return &eor_indirect_y_51;
-        case 0x52: return &unimplemented_opcode;
-        case 0x53: return &unimplemented_opcode;
-        case 0x54: return &unimplemented_opcode;
-        case 0x55: return &eor_zero_page_x_55;
-        case 0x56: return &unimplemented_opcode;
-        case 0x57: return &unimplemented_opcode;
-        case 0x58: return &unimplemented_opcode;
-        case 0x59: return &eor_absolute_y_59;
-        case 0x5A: return &unimplemented_opcode;
-        case 0x5B: return &unimplemented_opcode;
-        case 0x5C: return &unimplemented_opcode;
-        case 0x5D: return &eor_absolute_x_5D;
-        case 0x5E: return &unimplemented_opcode;
-        case 0x5F: return &unimplemented_opcode;
-        case 0x60: return &unimplemented_opcode;
-        case 0x61: return &adc_indirect_x_61;
-        case 0x62: return &unimplemented_opcode;
-        case 0x63: return &unimplemented_opcode;
-        case 0x64: return &unimplemented_opcode;
-        case 0x65: return &adc_zero_page_65;
-        case 0x66: return &unimplemented_opcode;
-        case 0x67: return &unimplemented_opcode;
-        case 0x68: return &unimplemented_opcode;
-        case 0x69: return &adc_immediate_69;
-        case 0x6A: return &unimplemented_opcode;
-        case 0x6B: return &unimplemented_opcode;
-        case 0x6C: return &unimplemented_opcode;
-        case 0x6D: return &adc_absolute_6D;
-        case 0x6E: return &unimplemented_opcode;
-        case 0x6F: return &unimplemented_opcode;
-        case 0x70: return &unimplemented_opcode;
-        case 0x71: return &adc_indirect_y_71;
-        case 0x72: return &unimplemented_opcode;
-        case 0x73: return &unimplemented_opcode;
-        case 0x74: return &unimplemented_opcode;
-        case 0x75: return &adc_zero_page_x_75;
-        case 0x76: return &unimplemented_opcode;
-        case 0x77: return &unimplemented_opcode;
-        case 0x78: return &unimplemented_opcode;
-        case 0x79: return &adc_absolute_y_79;
-        case 0x7A: return &unimplemented_opcode;
-        case 0x7B: return &unimplemented_opcode;
-        case 0x7C: return &unimplemented_opcode;
-        case 0x7D: return &adc_absolute_x_7D;
-        case 0x7E: return &unimplemented_opcode;
-        case 0x7F: return &unimplemented_opcode;
-        case 0x80: return &unimplemented_opcode;
-        case 0x81: return &sta_indirect_x_81;
-        case 0x82: return &unimplemented_opcode;
-        case 0x83: return &unimplemented_opcode;
-        case 0x84: return &sty_zero_page_84;
-        case 0x85: return &sta_zero_page_85;
-        case 0x86: return &stx_zero_page_86;
-        case 0x87: return &sax_zero_page_87;
-        case 0x88: return &unimplemented_opcode;
-        case 0x89: return &unimplemented_opcode;
-        case 0x8A: return &unimplemented_opcode;
-        case 0x8B: return &unimplemented_opcode;
-        case 0x8C: return &sty_absolute_8C;
-        case 0x8D: return &sta_absolute_8D;
-        case 0x8E: return &stx_absolute_8E;
-        case 0x8F: return &unimplemented_opcode;
-        case 0x90: return &unimplemented_opcode;
-        case 0x91: return &sta_indirect_y_91;
-        case 0x92: return &unimplemented_opcode;
-        case 0x93: return &unimplemented_opcode;
-        case 0x94: return &sty_zero_page_x_94;
-        case 0x95: return &sta_zero_page_x_95;
-        case 0x96: return &stx_zero_page_y_96;
-        case 0x97: return &sax_zero_page_y_97;
-        case 0x98: return &unimplemented_opcode;
-        case 0x99: return &sta_absolute_y_99;
-        case 0x9A: return &unimplemented_opcode;
-        case 0x9B: return &unimplemented_opcode;
-        case 0x9C: return &unimplemented_opcode;
-        case 0x9D: return &sta_absolute_x_9D;
-        case 0x9E: return &unimplemented_opcode;
-        case 0x9F: return &unimplemented_opcode;
-        case 0xA0: return &ldy_immediate_A0;
-        case 0xA1: return &lda_indirect_x_A1;
-        case 0xA2: return &ldx_immediate_A2;
-        case 0xA3: return &unimplemented_opcode;
-        case 0xA4: return &ldy_zero_page_A4;
-        case 0xA5: return &lda_zero_page_A5;
-        case 0xA6: return &ldx_zero_page_A6;
-        case 0xA7: return &unimplemented_opcode;
-        case 0xA8: return &unimplemented_opcode;
-        case 0xA9: return &lda_immediate_A9;
-        case 0xAA: return &unimplemented_opcode;
-        case 0xAB: return &unimplemented_opcode;
-        case 0xAC: return &ldy_absolute_AC;
-        case 0xAD: return &lda_absolute_AD;
-        case 0xAE: return &ldx_absolute_AE;
-        case 0xAF: return &unimplemented_opcode;
-        case 0xB0: return &unimplemented_opcode;
-        case 0xB1: return &lda_indirect_y_B1;
-        case 0xB2: return &unimplemented_opcode;
-        case 0xB3: return &unimplemented_opcode;
-        case 0xB4: return &ldy_zero_page_x_B4;
-        case 0xB5: return &lda_zero_page_x_B5;
-        case 0xB6: return &ldx_zero_page_x_B6;
-        case 0xB7: return &unimplemented_opcode;
-        case 0xB8: return &unimplemented_opcode;
-        case 0xB9: return &lda_absolute_y_B9;
-        case 0xBA: return &unimplemented_opcode;
-        case 0xBB: return &unimplemented_opcode;
-        case 0xBC: return &ldy_absolute_x_BC;
-        case 0xBD: return &lda_absolute_x_BD;
-        case 0xBE: return &ldx_absolute_x_BE;
-        case 0xBF: return &unimplemented_opcode;
-        case 0xC0: return &cpy_immediate_C0;
-        case 0xC1: return &cmp_indirect_x_C1;
-        case 0xC2: return &unimplemented_opcode;
-        case 0xC3: return &unimplemented_opcode;
-        case 0xC4: return &cpy_C4;
-        case 0xC5: return &cmp_zero_page_C5;
-        case 0xC6: return &unimplemented_opcode;
-        case 0xC7: return &unimplemented_opcode;
-        case 0xC8: return &unimplemented_opcode;
-        case 0xC9: return &cmp_immediate_C9;
-        case 0xCA: return &unimplemented_opcode;
-        case 0xCB: return &unimplemented_opcode;
-        case 0xCC: return &cpy_absolute_CC;
-        case 0xCD: return &cmp_absolute_CD;
-        case 0xCE: return &unimplemented_opcode;
-        case 0xCF: return &unimplemented_opcode;
-        case 0xD0: return &unimplemented_opcode;
-        case 0xD1: return &cmp_indirect_y_D1;
-        case 0xD2: return &unimplemented_opcode;
-        case 0xD3: return &unimplemented_opcode;
-        case 0xD4: return &unimplemented_opcode;
-        case 0xD5: return &cmp_zero_page_x_D5;
-        case 0xD6: return &unimplemented_opcode;
-        case 0xD7: return &unimplemented_opcode;
-        case 0xD8: return &unimplemented_opcode;
-        case 0xD9: return &cmp_absolute_y_D9;
-        case 0xDA: return &unimplemented_opcode;
-        case 0xDB: return &unimplemented_opcode;
-        case 0xDC: return &unimplemented_opcode;
-        case 0xDD: return &cmp_absolute_x_DD;
-        case 0xDE: return &unimplemented_opcode;
-        case 0xDF: return &unimplemented_opcode;
-        case 0xE0: return &cpx_immediate_E0;
-        case 0xE1: return &sbc_indirect_x_E1;
-        case 0xE2: return &unimplemented_opcode;
-        case 0xE3: return &unimplemented_opcode;
-        case 0xE4: return &cpx_E4;
-        case 0xE5: return &sbc_zero_page_E5;
-        case 0xE6: return &unimplemented_opcode;
-        case 0xE7: return &unimplemented_opcode;
-        case 0xE8: return &unimplemented_opcode;
-        case 0xE9: return &sbc_immediate_E9;
-        case 0xEA: return &unimplemented_opcode;
-        case 0xEB: return &unimplemented_opcode;
-        case 0xEC: return &cpx_absolute_EC;
-        case 0xED: return &sbc_absolute_ED;
-        case 0xEE: return &unimplemented_opcode;
-        case 0xEF: return &unimplemented_opcode;
-        case 0xF0: return &unimplemented_opcode;
-        case 0xF1: return &sbc_indirect_y_F1;
-        case 0xF2: return &unimplemented_opcode;
-        case 0xF3: return &unimplemented_opcode;
-        case 0xF4: return &unimplemented_opcode;
-        case 0xF5: return &sbc_zero_page_x_F5;
-        case 0xF6: return &unimplemented_opcode;
-        case 0xF7: return &unimplemented_opcode;
-        case 0xF8: return &unimplemented_opcode;
-        case 0xF9: return &sbc_absolute_y_F9;
-        case 0xFA: return &unimplemented_opcode;
-        case 0xFB: return &unimplemented_opcode;
-        case 0xFC: return &unimplemented_opcode;
-        case 0xFD: return &sbc_absolute_x_FD;
-        case 0xFE: return &unimplemented_opcode;
-        case 0xFF: return &unimplemented_opcode;
+        case 0x00: { unimplemented(ops); return; }
+        case 0x01: { indirect_x(ops, ora_memory); return; }
+        case 0x02: { unimplemented(ops); return; }
+        case 0x03: { unimplemented(ops); return; }
+        case 0x04: { unimplemented(ops); return; }
+        case 0x05: { zero_page(ops, ora_memory); return; }
+        case 0x06: { unimplemented(ops); return; }
+        case 0x07: { unimplemented(ops); return; }
+        case 0x08: { unimplemented(ops); return; }
+        case 0x09: { immediate(ops, ora_immediate); return; }
+        case 0x0A: { unimplemented(ops); return; }
+        case 0x0B: { unimplemented(ops); return; }
+        case 0x0C: { unimplemented(ops); return; }
+        case 0x0D: { absolute(ops, ora_memory); return; }
+        case 0x0E: { unimplemented(ops); return; }
+        case 0x0F: { unimplemented(ops); return; }
+        case 0x10: { unimplemented(ops); return; }
+        case 0x11: { indirect_y(ops, ora_memory); return; }
+        case 0x12: { unimplemented(ops); return; }
+        case 0x13: { unimplemented(ops); return; }
+        case 0x14: { unimplemented(ops); return; }
+        case 0x15: { zero_page_x_indexed(ops, ora_memory); return; }
+        case 0x16: { unimplemented(ops); return; }
+        case 0x17: { unimplemented(ops); return; }
+        case 0x18: { unimplemented(ops); return; }
+        case 0x19: { absolute_y(ops, ora_memory); return; }
+        case 0x1A: { unimplemented(ops); return; }
+        case 0x1B: { unimplemented(ops); return; }
+        case 0x1C: { unimplemented(ops); return; }
+        case 0x1D: { absolute_x(ops, ora_memory); return; }
+        case 0x1E: { unimplemented(ops); return; }
+        case 0x1F: { unimplemented(ops); return; }
+        case 0x20: { unimplemented(ops); return; }
+        case 0x21: { indirect_x(ops, and_memory); return; }
+        case 0x22: { unimplemented(ops); return; }
+        case 0x23: { unimplemented(ops); return; }
+        case 0x24: { zero_page(ops, bit_test_memory); return; }
+        case 0x25: { zero_page(ops, and_memory); return; }
+        case 0x26: { unimplemented(ops); return; }
+        case 0x27: { unimplemented(ops); return; }
+        case 0x28: { unimplemented(ops); return; }
+        case 0x29: { immediate(ops, and_immediate); return; }
+        case 0x2A: { unimplemented(ops); return; }
+        case 0x2B: { unimplemented(ops); return; }
+        case 0x2C: { absolute(ops, bit_test_memory); return; }
+        case 0x2D: { absolute(ops, and_memory); return; }
+        case 0x2E: { unimplemented(ops); return; }
+        case 0x2F: { unimplemented(ops); return; }
+        case 0x30: { unimplemented(ops); return; }
+        case 0x31: { indirect_y(ops, and_memory); return; }
+        case 0x32: { unimplemented(ops); return; }
+        case 0x33: { unimplemented(ops); return; }
+        case 0x34: { unimplemented(ops); return; }
+        case 0x35: { zero_page_x_indexed(ops, and_memory); return; }
+        case 0x36: { unimplemented(ops); return; }
+        case 0x37: { unimplemented(ops); return; }
+        case 0x38: { unimplemented(ops); return; }
+        case 0x39: { absolute_y(ops, and_memory); return; }
+        case 0x3A: { unimplemented(ops); return; }
+        case 0x3B: { unimplemented(ops); return; }
+        case 0x3C: { unimplemented(ops); return; }
+        case 0x3D: { absolute_x(ops, and_memory); return; }
+        case 0x3E: { unimplemented(ops); return; }
+        case 0x3F: { unimplemented(ops); return; }
+        case 0x40: { unimplemented(ops); return; }
+        case 0x41: { indirect_x(ops, eor_memory); return; }
+        case 0x42: { unimplemented(ops); return; }
+        case 0x43: { unimplemented(ops); return; }
+        case 0x44: { unimplemented(ops); return; }
+        case 0x45: { zero_page(ops, eor_memory); return; }
+        case 0x46: { unimplemented(ops); return; }
+        case 0x47: { unimplemented(ops); return; }
+        case 0x48: { unimplemented(ops); return; }
+        case 0x49: { immediate(ops, eor_immediate); return; }
+        case 0x4A: { unimplemented(ops); return; }
+        case 0x4B: { unimplemented(ops); return; }
+        case 0x4C: { unimplemented(ops); return; }
+        case 0x4D: { absolute(ops, eor_memory); return; }
+        case 0x4E: { unimplemented(ops); return; }
+        case 0x4F: { unimplemented(ops); return; }
+        case 0x50: { unimplemented(ops); return; }
+        case 0x51: { indirect_y(ops, eor_memory); return; }
+        case 0x52: { unimplemented(ops); return; }
+        case 0x53: { unimplemented(ops); return; }
+        case 0x54: { unimplemented(ops); return; }
+        case 0x55: { zero_page_x_indexed(ops, eor_memory); return; }
+        case 0x56: { unimplemented(ops); return; }
+        case 0x57: { unimplemented(ops); return; }
+        case 0x58: { unimplemented(ops); return; }
+        case 0x59: { absolute_y(ops, eor_memory); return; }
+        case 0x5A: { unimplemented(ops); return; }
+        case 0x5B: { unimplemented(ops); return; }
+        case 0x5C: { unimplemented(ops); return; }
+        case 0x5D: { absolute_x(ops, eor_memory); return; }
+        case 0x5E: { unimplemented(ops); return; }
+        case 0x5F: { unimplemented(ops); return; }
+        case 0x60: { unimplemented(ops); return; }
+        case 0x61: { indirect_x(ops, adc_memory); return; }
+        case 0x62: { unimplemented(ops); return; }
+        case 0x63: { unimplemented(ops); return; }
+        case 0x64: { unimplemented(ops); return; }
+        case 0x65: { zero_page(ops, adc_memory); return; }
+        case 0x66: { unimplemented(ops); return; }
+        case 0x67: { unimplemented(ops); return; }
+        case 0x68: { unimplemented(ops); return; }
+        case 0x69: { immediate(ops, adc_immediate); return; }
+        case 0x6A: { unimplemented(ops); return; }
+        case 0x6B: { unimplemented(ops); return; }
+        case 0x6C: { unimplemented(ops); return; }
+        case 0x6D: { absolute(ops, adc_memory); return; }
+        case 0x6E: { unimplemented(ops); return; }
+        case 0x6F: { unimplemented(ops); return; }
+        case 0x70: { unimplemented(ops); return; }
+        case 0x71: { indirect_y(ops, adc_memory); return; }
+        case 0x72: { unimplemented(ops); return; }
+        case 0x73: { unimplemented(ops); return; }
+        case 0x74: { unimplemented(ops); return; }
+        case 0x75: { zero_page_x_indexed(ops, adc_memory); return; }
+        case 0x76: { unimplemented(ops); return; }
+        case 0x77: { unimplemented(ops); return; }
+        case 0x78: { unimplemented(ops); return; }
+        case 0x79: { absolute_y(ops, adc_memory); return; }
+        case 0x7A: { unimplemented(ops); return; }
+        case 0x7B: { unimplemented(ops); return; }
+        case 0x7C: { unimplemented(ops); return; }
+        case 0x7D: { absolute_x(ops, adc_memory); return; }
+        case 0x7E: { unimplemented(ops); return; }
+        case 0x7F: { unimplemented(ops); return; }
+        case 0x80: { unimplemented(ops); return; }
+        case 0x81: { indirect_x(ops, sta_memory); return; }
+        case 0x82: { unimplemented(ops); return; }
+        case 0x83: { unimplemented(ops); return; }
+        case 0x84: { zero_page(ops, sty_memory); return; }
+        case 0x85: { zero_page(ops, sta_memory); return; }
+        case 0x86: { zero_page(ops, stx_memory); return; }
+        case 0x87: { zero_page(ops, sax_memory); return; }
+        case 0x88: { unimplemented(ops); return; }
+        case 0x89: { unimplemented(ops); return; }
+        case 0x8A: { unimplemented(ops); return; }
+        case 0x8B: { unimplemented(ops); return; }
+        case 0x8C: { absolute(ops, sty_memory); return; }
+        case 0x8D: { absolute(ops, sta_memory); return; }
+        case 0x8E: { absolute(ops, stx_memory); return; }
+        case 0x8F: { unimplemented(ops); return; }
+        case 0x90: { unimplemented(ops); return; }
+        case 0x91: { indirect_y(ops, sta_memory); return; }
+        case 0x92: { unimplemented(ops); return; }
+        case 0x93: { unimplemented(ops); return; }
+        case 0x94: { zero_page_x_indexed(ops, sty_memory); return; }
+        case 0x95: { zero_page_x_indexed(ops, sta_memory); return; }
+        case 0x96: { zero_page_y_indexed(ops, stx_memory); return; }
+        case 0x97: { zero_page_y_indexed(ops, sax_memory); return; }
+        case 0x98: { unimplemented(ops); return; }
+        case 0x99: { absolute_y(ops, sta_memory); return; }
+        case 0x9A: { unimplemented(ops); return; }
+        case 0x9B: { unimplemented(ops); return; }
+        case 0x9C: { unimplemented(ops); return; }
+        case 0x9D: { absolute_x(ops, sta_memory); return; }
+        case 0x9E: { unimplemented(ops); return; }
+        case 0x9F: { unimplemented(ops); return; }
+        case 0xA0: { immediate(ops, ldy_immediate); return; }
+        case 0xA1: { indirect_x(ops, lda_memory); return; }
+        case 0xA2: { immediate(ops, ldx_immediate); return; }
+        case 0xA3: { unimplemented(ops); return; }
+        case 0xA4: { zero_page(ops, ldy_memory); return; }
+        case 0xA5: { zero_page(ops, lda_memory); return; }
+        case 0xA6: { zero_page(ops, ldx_memory); return; }
+        case 0xA7: { unimplemented(ops); return; }
+        case 0xA8: { unimplemented(ops); return; }
+        case 0xA9: { immediate(ops, lda_immediate); return; }
+        case 0xAA: { unimplemented(ops); return; }
+        case 0xAB: { unimplemented(ops); return; }
+        case 0xAC: { absolute(ops, ldy_memory); return; }
+        case 0xAD: { absolute(ops, lda_memory); return; }
+        case 0xAE: { absolute(ops, ldx_memory); return; }
+        case 0xAF: { unimplemented(ops); return; }
+        case 0xB0: { unimplemented(ops); return; }
+        case 0xB1: { indirect_y(ops, lda_memory); return; }
+        case 0xB2: { unimplemented(ops); return; }
+        case 0xB3: { unimplemented(ops); return; }
+        case 0xB4: { zero_page_x_indexed(ops, ldy_memory); return; }
+        case 0xB5: { zero_page_x_indexed(ops, lda_memory); return; }
+        case 0xB6: { zero_page_x_indexed(ops, ldx_memory); return; }
+        case 0xB7: { unimplemented(ops); return; }
+        case 0xB8: { unimplemented(ops); return; }
+        case 0xB9: { absolute_y(ops, lda_memory); return; }
+        case 0xBA: { unimplemented(ops); return; }
+        case 0xBB: { unimplemented(ops); return; }
+        case 0xBC: { absolute_x(ops, ldy_memory); return; }
+        case 0xBD: { absolute_x(ops, lda_memory); return; }
+        case 0xBE: { absolute_x(ops, ldx_memory); return; }
+        case 0xBF: { unimplemented(ops); return; }
+        case 0xC0: { immediate(ops, cpy_immediate); return; }
+        case 0xC1: { indirect_x(ops, cmp_memory); return; }
+        case 0xC2: { unimplemented(ops); return; }
+        case 0xC3: { unimplemented(ops); return; }
+        case 0xC4: { zero_page(ops, cpy_memory); return; }
+        case 0xC5: { zero_page(ops, cmp_memory); return; }
+        case 0xC6: { unimplemented(ops); return; }
+        case 0xC7: { unimplemented(ops); return; }
+        case 0xC8: { unimplemented(ops); return; }
+        case 0xC9: { immediate(ops, cmp_immediate); return; }
+        case 0xCA: { unimplemented(ops); return; }
+        case 0xCB: { unimplemented(ops); return; }
+        case 0xCC: { absolute(ops, cpy_memory); return; }
+        case 0xCD: { absolute(ops, cmp_memory); return; }
+        case 0xCE: { unimplemented(ops); return; }
+        case 0xCF: { unimplemented(ops); return; }
+        case 0xD0: { unimplemented(ops); return; }
+        case 0xD1: { indirect_y(ops, cmp_memory); return; }
+        case 0xD2: { unimplemented(ops); return; }
+        case 0xD3: { unimplemented(ops); return; }
+        case 0xD4: { unimplemented(ops); return; }
+        case 0xD5: { zero_page_x_indexed(ops, cmp_memory); return; }
+        case 0xD6: { unimplemented(ops); return; }
+        case 0xD7: { unimplemented(ops); return; }
+        case 0xD8: { unimplemented(ops); return; }
+        case 0xD9: { absolute_y(ops, cmp_memory); return; }
+        case 0xDA: { unimplemented(ops); return; }
+        case 0xDB: { unimplemented(ops); return; }
+        case 0xDC: { unimplemented(ops); return; }
+        case 0xDD: { absolute_x(ops, cmp_memory); return; }
+        case 0xDE: { unimplemented(ops); return; }
+        case 0xDF: { unimplemented(ops); return; }
+        case 0xE0: { immediate(ops, cpx_immediate); return; }
+        case 0xE1: { indirect_x(ops, sbc_memory); return; }
+        case 0xE2: { unimplemented(ops); return; }
+        case 0xE3: { unimplemented(ops); return; }
+        case 0xE4: { zero_page(ops, cpx_memory); return; }
+        case 0xE5: { zero_page(ops, sbc_memory); return; }
+        case 0xE6: { unimplemented(ops); return; }
+        case 0xE7: { unimplemented(ops); return; }
+        case 0xE8: { unimplemented(ops); return; }
+        case 0xE9: { immediate(ops, sbc_immediate); return; }
+        case 0xEA: { unimplemented(ops); return; }
+        case 0xEB: { unimplemented(ops); return; }
+        case 0xEC: { absolute(ops, cpx_memory); return; }
+        case 0xED: { absolute(ops, sbc_memory); return; }
+        case 0xEE: { unimplemented(ops); return; }
+        case 0xEF: { unimplemented(ops); return; }
+        case 0xF0: { unimplemented(ops); return; }
+        case 0xF1: { indirect_y(ops, sbc_memory); return; }
+        case 0xF2: { unimplemented(ops); return; }
+        case 0xF3: { unimplemented(ops); return; }
+        case 0xF4: { unimplemented(ops); return; }
+        case 0xF5: { zero_page_x_indexed(ops, sbc_memory); return; }
+        case 0xF6: { unimplemented(ops); return; }
+        case 0xF7: { unimplemented(ops); return; }
+        case 0xF8: { unimplemented(ops); return; }
+        case 0xF9: { absolute_y(ops, sbc_memory); return; }
+        case 0xFA: { unimplemented(ops); return; }
+        case 0xFB: { unimplemented(ops); return; }
+        case 0xFC: { unimplemented(ops); return; }
+        case 0xFD: { absolute_x(ops, sbc_memory); return; }
+        case 0xFE: { unimplemented(ops); return; }
+        case 0xFF: { unimplemented(ops); return; }
     }
-    return &unimplemented_opcode;
+    unimplemented(ops);
 }
