@@ -86,7 +86,7 @@ int get_indirect_high_nibble(struct State *state) {
 }
 
 int unimplemented(struct State *state) {
-    printf("unimplemented opcode\n");
+    printf("unimplemented opcode %02X\n", state->memory[state->program_counter - 1]);
     return ERROR;
 }
 
