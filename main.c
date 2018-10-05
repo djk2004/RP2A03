@@ -45,7 +45,7 @@ int main() {
     
     state.memory[index++] = 0xA6;  // LDX, $55
     state.memory[index++] = 0x55;
-    state.memory[index++] = 0x66;  // ROR $55
+    state.memory[index++] = 0xE6;  // INC $55
     state.memory[index++] = 0x55;
     state.memory[index++] = 0xA4;  // LDY, $55
     state.memory[index++] = 0x55;

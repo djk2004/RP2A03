@@ -23,6 +23,8 @@
 #include "ops/rol.h"
 #include "ops/lsr.h"
 #include "ops/ror.h"
+#include "ops/inc.h"
+#include "ops/dec.h"
 
 int get_low_nibble_address(struct State *state) {
     byte b = state->memory[state->program_counter++];
@@ -395,7 +397,7 @@ void get_opcode_instructions(instructions *ops, byte opcode) {
         case 0xC3: { unimplemented(ops); return; }
         case 0xC4: { zero_page(ops, cpy_memory); return; }
         case 0xC5: { zero_page(ops, cmp_memory); return; }
-        case 0xC6: { unimplemented(ops); return; }
+        case 0xC6: { zero_page_read_modify_write(ops, dec_memory); return; }
         case 0xC7: { unimplemented(ops); return; }
         case 0xC8: { unimplemented(ops); return; }
         case 0xC9: { immediate(ops, cmp_immediate); return; }
@@ -427,7 +429,7 @@ void get_opcode_instructions(instructions *ops, byte opcode) {
         case 0xE3: { unimplemented(ops); return; }
         case 0xE4: { zero_page(ops, cpx_memory); return; }
         case 0xE5: { zero_page(ops, sbc_memory); return; }
-        case 0xE6: { unimplemented(ops); return; }
+        case 0xE6: { zero_page_read_modify_write(ops, inc_memory); return; }
         case 0xE7: { unimplemented(ops); return; }
         case 0xE8: { unimplemented(ops); return; }
         case 0xE9: { immediate(ops, sbc_immediate); return; }
