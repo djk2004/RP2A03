@@ -67,3 +67,15 @@ struct Result subtract(byte value1, byte value2, bit initial_carry) {
     byte carry_complement = twos_complement(initial_carry);
     return add(value1, value2_complement, carry_complement);
 }
+
+struct Result shift_left_one(byte value) {
+    byte new_value = value << 1;
+    struct Result r = {
+        .carry = (value & BIT_7) >> 7,
+        .overflow = 0,
+        .zero = is_zero(new_value),
+        .negative = is_negative(new_value),
+        .result = new_value
+    };
+    return r;
+}

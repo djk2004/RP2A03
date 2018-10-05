@@ -19,6 +19,7 @@
 #include "ops/cpx.h"
 #include "ops/cmp.h"
 #include "ops/sax.h"
+#include "ops/asl.h"
 
 int get_low_nibble_address(struct State *state) {
     byte b = state->memory[state->program_counter++];
@@ -83,6 +84,16 @@ int get_indirect_high_nibble(struct State *state) {
     byte lowPlus1 = add(low, 1, 0).result;
     byte high = state->memory[lowPlus1];
     state->_tmp_address = (high << 8) | state->_tmp_byte;
+    return OK;
+}
+
+int read_address_contents(struct State *state) {
+    state->_tmp_byte = state->memory[state->_tmp_address];
+    return OK;
+}
+
+int write_value_to_address(struct State *state) {
+    state->memory[state->_tmp_address] = state->_tmp_byte;
     return OK;
 }
 
@@ -172,6 +183,15 @@ void zero_page_y_indexed(instructions *ops, int f(struct State *state)) {
     ops[i++] = NULL;
 }
 
+void zero_page_read_modify_write(instructions *ops, int f(struct State *state)) {
+    int i = 0;
+    ops[i++] = get_low_nibble_address;
+    ops[i++] = read_address_contents;
+    ops[i++] = f;
+    ops[i++] = write_value_to_address;
+    ops[i++] = NULL;
+}
+
 void get_opcode_instructions(instructions *ops, byte opcode) {
     switch (opcode) {
         case 0x00: { unimplemented(ops); return; }
@@ -180,7 +200,7 @@ void get_opcode_instructions(instructions *ops, byte opcode) {
         case 0x03: { unimplemented(ops); return; }
         case 0x04: { unimplemented(ops); return; }
         case 0x05: { zero_page(ops, ora_memory); return; }
-        case 0x06: { unimplemented(ops); return; }
+        case 0x06: { zero_page_read_modify_write(ops, asl_memory); return; }
         case 0x07: { unimplemented(ops); return; }
         case 0x08: { unimplemented(ops); return; }
         case 0x09: { immediate(ops, ora_immediate); return; }
