@@ -92,74 +92,84 @@ int unimplemented_message(struct State *state) {
 }
 
 void unimplemented(instructions *ops) {
-    ops[0] = unimplemented_message;
-    ops[1] = NULL;
+    int i = 0;
+    ops[i++] = unimplemented_message;
+    ops[i++] = NULL;
 }
 
 void indirect_x(instructions *ops, int f(struct State *state)) {
-    ops[0] = get_low_nibble_address;
-    ops[1] = update_address_indirect_x;
-    ops[2] = get_indirect_low_nibble;
-    ops[3] = get_indirect_high_nibble;
-    ops[4] = f;
-    ops[5] = NULL;
+    int i = 0;
+    ops[i++] = get_low_nibble_address;
+    ops[i++] = update_address_indirect_x;
+    ops[i++] = get_indirect_low_nibble;
+    ops[i++] = get_indirect_high_nibble;
+    ops[i++] = f;
+    ops[i++] = NULL;
 }
 
 void zero_page(instructions *ops, int f(struct State *state)) {
-    ops[0] = get_low_nibble_address;
-    ops[1] = f;
-    ops[2] = NULL;
+    int i = 0;
+    ops[i++] = get_low_nibble_address;
+    ops[i++] = f;
+    ops[i++] = NULL;
 }
 
 void immediate(instructions *ops, int f(struct State *state)) {
-    ops[0] = f;
-    ops[1] = NULL;
+    int i = 0;
+    ops[i++] = f;
+    ops[i++] = NULL;
 }
 
 void indirect_y(instructions *ops, int f(struct State *state)) {
-    ops[0] = get_low_nibble_address;
-    ops[1] = get_indirect_low_nibble;
-    ops[2] = get_indirect_high_nibble;
-    ops[3] = index_address_y;
-    ops[4] = f;
-    ops[5] = NULL;
+    int i = 0;
+    ops[i++] = get_low_nibble_address;
+    ops[i++] = get_indirect_low_nibble;
+    ops[i++] = get_indirect_high_nibble;
+    ops[i++] = index_address_y;
+    ops[i++] = f;
+    ops[i++] = NULL;
 }
 
 void absolute(instructions *ops, int f(struct State *state)) {
-    ops[0] = get_low_nibble_address;
-    ops[1] = get_high_nibble_address;
-    ops[2] = f;
-    ops[3] = NULL;
+    int i = 0;
+    ops[i++] = get_low_nibble_address;
+    ops[i++] = get_high_nibble_address;
+    ops[i++] = f;
+    ops[i++] = NULL;
 }
 
 void absolute_y(instructions *ops, int f(struct State *state)) {
-    ops[0] = get_low_nibble_address;
-    ops[1] = get_high_nibble_address;
-    ops[2] = index_address_y;
-    ops[3] = f;
-    ops[4] = NULL;
+    int i = 0;
+    ops[i++] = get_low_nibble_address;
+    ops[i++] = get_high_nibble_address;
+    ops[i++] = index_address_y;
+    ops[i++] = f;
+    ops[i++] = NULL;
 }
 
 void absolute_x(instructions *ops, int f(struct State *state)) {
-    ops[0] = get_low_nibble_address;
-    ops[1] = get_high_nibble_address;
-    ops[2] = index_address_x;
-    ops[3] = f;
-    ops[4] = NULL;
+    int i = 0;
+    ops[i++] = get_low_nibble_address;
+    ops[i++] = get_high_nibble_address;
+    ops[i++] = index_address_x;
+    ops[i++] = f;
+    ops[i++] = NULL;
 }
 
 void zero_page_x_indexed(instructions *ops, int f(struct State *state)) {
-    ops[0] = get_low_nibble_address;
-    ops[1] = index_zero_page_by_x;
-    ops[2] = f;
-    ops[3] = NULL;
+    int i = 0;
+    ops[i++] = get_low_nibble_address;
+    ops[i++] = index_zero_page_by_x;
+    ops[i++] = f;
+    ops[i++] = NULL;
 }
 
 void zero_page_y_indexed(instructions *ops, int f(struct State *state)) {
-    ops[0] = get_low_nibble_address;
-    ops[1] = index_zero_page_by_y;
-    ops[2] = f;
-    ops[3] = NULL;
+    int i = 0;
+    ops[i++] = get_low_nibble_address;
+    ops[i++] = index_zero_page_by_y;
+    ops[i++] = f;
+    ops[i++] = NULL;
 }
 
 void get_opcode_instructions(instructions *ops, byte opcode) {

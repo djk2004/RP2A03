@@ -52,6 +52,7 @@ int main() {
 
     state.program_counter = 0;
     int run_state = 0;
+    instructions *current = (instructions*)malloc(sizeof(instructions*) * 9);
     while (run_state >= 0) {
         if (state.cycles % INTERRUPT_PERIOD_MS == 0) {
             // TODO: some interrupt tasks here, increment cycles as needed
@@ -59,7 +60,6 @@ int main() {
         } else {
             byte opcode = state.memory[state.program_counter++];
             state.cycles++;
-            instructions *current = (instructions*)malloc(sizeof(instructions*) * 8);
             get_opcode_instructions(current, opcode);
             for (int i=0; (current[i]) != NULL; i++) {
                 run_state = (current[i])(&state);
@@ -68,9 +68,9 @@ int main() {
                 else if (run_state == ERROR)
                     break;
             }
-            free(current);
         }
     }
+    free(current);
 
     // TODO: remove later
     printf("accumulator = %02X\n", state.a);
