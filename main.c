@@ -41,11 +41,11 @@ int main() {
     // state.memory[index++] = 0x65;  // ADC $F0
     // state.memory[index++] = 0xF0;
 
-    state.memory[0x0055] = 0xAA;
+    state.memory[0x0055] = 0xBB;
     
     state.memory[index++] = 0xA6;  // LDX, $55
     state.memory[index++] = 0x55;
-    state.memory[index++] = 0x26;  // ROL $55
+    state.memory[index++] = 0x46;  // LSR $55
     state.memory[index++] = 0x55;
     state.memory[index++] = 0xA4;  // LDY, $55
     state.memory[index++] = 0x55;

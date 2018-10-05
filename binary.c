@@ -79,3 +79,15 @@ struct Result shift_left_one(byte value) {
     };
     return r;
 }
+
+struct Result shift_right_one(byte value) {
+    byte new_value = value >> 1;
+    struct Result r = {
+        .carry = value & BIT_0,
+        .overflow = 0,
+        .zero = is_zero(new_value),
+        .negative = is_negative(new_value),
+        .result = new_value
+    };
+    return r;
+}

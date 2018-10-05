@@ -28,5 +28,6 @@ bit is_zero(byte b);
 struct Result add(byte value1, byte value2, bit initial_carry);
 struct Result subtract(byte value1, byte value2, bit initial_carry);
 struct Result shift_left_one(byte value);
+struct Result shift_right_one(byte value);
 
 #endif
