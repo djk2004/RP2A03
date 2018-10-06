@@ -41,14 +41,11 @@ int main() {
     // state.memory[index++] = 0x65;  // ADC $F0
     // state.memory[index++] = 0xF0;
 
-    state.memory[0x0055] = 0xBB;
+    // state.memory[0x0055] = 0xBB;
     
-    state.memory[index++] = 0xA6;  // LDX, $01
-    state.memory[index++] = 0x01;
-    state.memory[index++] = 0x16;  // ASL $54, X
-    state.memory[index++] = 0x54;
-    state.memory[index++] = 0xA4;  // LDY, $55
-    state.memory[index++] = 0x55;
+    state.memory[index++] = 0xA9;  // LDA, #$CC
+    state.memory[index++] = 0xCC;
+    state.memory[index++] = 0x0A;  // ASL A
 
     state.program_counter = 0;
     int run_state = 0;

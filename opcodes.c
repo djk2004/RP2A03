@@ -219,7 +219,7 @@ void get_opcode_instructions(instructions *ops, byte opcode) {
         case 0x07: { unimplemented(ops); return; }
         case 0x08: { unimplemented(ops); return; }
         case 0x09: { immediate(ops, ora_immediate); return; }
-        case 0x0A: { unimplemented(ops); return; }
+        case 0x0A: { immediate(ops, asl_accumulator); return; }
         case 0x0B: { unimplemented(ops); return; }
         case 0x0C: { unimplemented(ops); return; }
         case 0x0D: { absolute(ops, ora_memory); return; }
@@ -251,7 +251,7 @@ void get_opcode_instructions(instructions *ops, byte opcode) {
         case 0x27: { unimplemented(ops); return; }
         case 0x28: { unimplemented(ops); return; }
         case 0x29: { immediate(ops, and_immediate); return; }
-        case 0x2A: { unimplemented(ops); return; }
+        case 0x2A: { immediate(ops, rol_accumulator); return; }
         case 0x2B: { unimplemented(ops); return; }
         case 0x2C: { absolute(ops, bit_test_memory); return; }
         case 0x2D: { absolute(ops, and_memory); return; }
@@ -283,7 +283,7 @@ void get_opcode_instructions(instructions *ops, byte opcode) {
         case 0x47: { unimplemented(ops); return; }
         case 0x48: { unimplemented(ops); return; }
         case 0x49: { immediate(ops, eor_immediate); return; }
-        case 0x4A: { unimplemented(ops); return; }
+        case 0x4A: { immediate(ops, lsr_accumulator); return; }
         case 0x4B: { unimplemented(ops); return; }
         case 0x4C: { unimplemented(ops); return; }
         case 0x4D: { absolute(ops, eor_memory); return; }
@@ -315,7 +315,7 @@ void get_opcode_instructions(instructions *ops, byte opcode) {
         case 0x67: { unimplemented(ops); return; }
         case 0x68: { unimplemented(ops); return; }
         case 0x69: { immediate(ops, adc_immediate); return; }
-        case 0x6A: { unimplemented(ops); return; }
+        case 0x6A: { immediate(ops, ror_accumulator); return; }
         case 0x6B: { unimplemented(ops); return; }
         case 0x6C: { unimplemented(ops); return; }
         case 0x6D: { absolute(ops, adc_memory); return; }

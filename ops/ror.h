@@ -4,5 +4,6 @@
 #include "../state.h"
 
 int ror_memory(struct State *state);
+int ror_accumulator(struct State *state);
 
 #endif

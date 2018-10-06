@@ -9,3 +9,12 @@ int rol_memory(struct State *state) {
     state->negative = r.negative;
     return OK;
 }
+
+int rol_accumulator(struct State *state) {
+    struct Result r = shift_left_one(state->a);
+    state->a = r.result | r.carry;
+    state->carry = r.carry;
+    state->zero = r.zero;
+    state->negative = r.negative;
+    return OK;
+}
