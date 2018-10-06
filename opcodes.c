@@ -50,7 +50,7 @@ int index_zero_page_by_y(struct State *state) {
     return OK;
 }
 
-int index_address_by_value(struct State *state, byte index) {
+int index_address_by_value(struct State *state, byte index, bool ignore_cycle_on_no_carry) {
     byte low = state->_tmp_address & 0xFF;
     byte high = (state->_tmp_address & 0xFF00) >> 8;
     struct Result r = add(low, index, 0);
@@ -61,15 +61,23 @@ int index_address_by_value(struct State *state, byte index) {
         return OK;
     }
     state->_tmp_address |= (high << 8);
-    return OK_IGNORE_CYCLE;    
+    return ignore_cycle_on_no_carry ? OK_IGNORE_CYCLE : OK;
 }
 
 int index_address_x(struct State *state) {
-    return index_address_by_value(state, state->x);   
+    return index_address_by_value(state, state->x, true);   
 }
 
 int index_address_y(struct State *state) {
-    return index_address_by_value(state, state->y);   
+    return index_address_by_value(state, state->y, true);   
+}
+
+int index_address_x_always_cycle(struct State *state) {
+    return index_address_by_value(state, state->x, false);   
+}
+
+int index_address_y_always_cycle(struct State *state) {
+    return index_address_by_value(state, state->y, false);   
 }
 
 int update_address_indirect_x(struct State *state) {
@@ -217,6 +225,17 @@ void absolute_read_modify_write(instructions *ops, int f(struct State *state)) {
     ops[i++] = NULL;
 }
 
+void absolute_x_indexed_read_modify_write(instructions *ops, int f(struct State *state)) {
+    int i = 0;
+    ops[i++] = get_low_nibble_address;
+    ops[i++] = get_high_nibble_address;
+    ops[i++] = index_address_x_always_cycle;
+    ops[i++] = read_address_contents;
+    ops[i++] = f;
+    ops[i++] = write_value_to_address;
+    ops[i++] = NULL;
+}
+
 void get_opcode_instructions(instructions *ops, byte opcode) {
     switch (opcode) {
         case 0x00: { unimplemented(ops); return; }
@@ -249,7 +268,7 @@ void get_opcode_instructions(instructions *ops, byte opcode) {
         case 0x1B: { unimplemented(ops); return; }
         case 0x1C: { unimplemented(ops); return; }
         case 0x1D: { absolute_x(ops, ora_memory); return; }
-        case 0x1E: { unimplemented(ops); return; }
+        case 0x1E: { absolute_x_indexed_read_modify_write(ops, asl_memory); return; }
         case 0x1F: { unimplemented(ops); return; }
         case 0x20: { unimplemented(ops); return; }
         case 0x21: { indirect_x(ops, and_memory); return; }
@@ -281,7 +300,7 @@ void get_opcode_instructions(instructions *ops, byte opcode) {
         case 0x3B: { unimplemented(ops); return; }
         case 0x3C: { unimplemented(ops); return; }
         case 0x3D: { absolute_x(ops, and_memory); return; }
-        case 0x3E: { unimplemented(ops); return; }
+        case 0x3E: { absolute_x_indexed_read_modify_write(ops, rol_memory); return; }
         case 0x3F: { unimplemented(ops); return; }
         case 0x40: { unimplemented(ops); return; }
         case 0x41: { indirect_x(ops, eor_memory); return; }
@@ -313,7 +332,7 @@ void get_opcode_instructions(instructions *ops, byte opcode) {
         case 0x5B: { unimplemented(ops); return; }
         case 0x5C: { unimplemented(ops); return; }
         case 0x5D: { absolute_x(ops, eor_memory); return; }
-        case 0x5E: { unimplemented(ops); return; }
+        case 0x5E: { absolute_x_indexed_read_modify_write(ops, lsr_memory); return; }
         case 0x5F: { unimplemented(ops); return; }
         case 0x60: { unimplemented(ops); return; }
         case 0x61: { indirect_x(ops, adc_memory); return; }
@@ -345,7 +364,7 @@ void get_opcode_instructions(instructions *ops, byte opcode) {
         case 0x7B: { unimplemented(ops); return; }
         case 0x7C: { unimplemented(ops); return; }
         case 0x7D: { absolute_x(ops, adc_memory); return; }
-        case 0x7E: { unimplemented(ops); return; }
+        case 0x7E: { absolute_x_indexed_read_modify_write(ops, ror_memory); return; }
         case 0x7F: { unimplemented(ops); return; }
         case 0x80: { unimplemented(ops); return; }
         case 0x81: { indirect_x(ops, sta_memory); return; }
@@ -441,7 +460,7 @@ void get_opcode_instructions(instructions *ops, byte opcode) {
         case 0xDB: { unimplemented(ops); return; }
         case 0xDC: { unimplemented(ops); return; }
         case 0xDD: { absolute_x(ops, cmp_memory); return; }
-        case 0xDE: { unimplemented(ops); return; }
+        case 0xDE: { absolute_x_indexed_read_modify_write(ops, dec_memory); return; }
         case 0xDF: { unimplemented(ops); return; }
         case 0xE0: { immediate(ops, cpx_immediate); return; }
         case 0xE1: { indirect_x(ops, sbc_memory); return; }
@@ -473,7 +492,7 @@ void get_opcode_instructions(instructions *ops, byte opcode) {
         case 0xFB: { unimplemented(ops); return; }
         case 0xFC: { unimplemented(ops); return; }
         case 0xFD: { absolute_x(ops, sbc_memory); return; }
-        case 0xFE: { unimplemented(ops); return; }
+        case 0xFE: { absolute_x_indexed_read_modify_write(ops, inc_memory); return; }
         case 0xFF: { unimplemented(ops); return; }
     }
     unimplemented(ops);

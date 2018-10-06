@@ -41,12 +41,12 @@ int main() {
     // state.memory[index++] = 0x65;  // ADC $F0
     // state.memory[index++] = 0xF0;
 
-    state.memory[0x4455] = 0xBB;
+    state.memory[0x4455] = 0x11;
     
     state.memory[index++] = 0xA2;  // LDX, #$01
     state.memory[index++] = 0x01;
-    state.memory[index++] = 0x0E;  // ASL $4455, X
-    state.memory[index++] = 0x55;
+    state.memory[index++] = 0x1E;  // ASL $4454, X
+    state.memory[index++] = 0x54;
     state.memory[index++] = 0x44;
 
     state.program_counter = 0;
