@@ -59,8 +59,8 @@ int main() {
         } else {
             byte opcode = state.memory[state.program_counter++];
             state.cycles++;
-            get_opcode_instructions(current, opcode);
-            for (int i=0; (current[i]) != NULL; i++) {
+            int length = get_opcode_instructions(current, opcode);
+            for (int i=0; i < length; i++) {
                 run_state = (current[i])(&state);
                 if (run_state == OK_IGNORE_CYCLE)
                     state.cycles++;

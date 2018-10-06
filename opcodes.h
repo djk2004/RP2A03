@@ -5,6 +5,6 @@
 #include "binary.h"
 
 typedef int (*instructions)(struct State*);
-void get_opcode_instructions(instructions *ops, byte opcode);
+int get_opcode_instructions(instructions *ops, byte opcode);
 
 #endif
