@@ -41,11 +41,13 @@ int main() {
     // state.memory[index++] = 0x65;  // ADC $F0
     // state.memory[index++] = 0xF0;
 
-    // state.memory[0x0055] = 0xBB;
+    state.memory[0x4455] = 0xBB;
     
-    state.memory[index++] = 0xA9;  // LDA, #$CC
-    state.memory[index++] = 0xCC;
-    state.memory[index++] = 0x0A;  // ASL A
+    state.memory[index++] = 0xA2;  // LDX, #$01
+    state.memory[index++] = 0x01;
+    state.memory[index++] = 0x0E;  // ASL $4455, X
+    state.memory[index++] = 0x55;
+    state.memory[index++] = 0x44;
 
     state.program_counter = 0;
     int run_state = 0;
@@ -81,6 +83,7 @@ int main() {
     printf("cycles = %lu\n", state.cycles);
     printf("_tmp_address = %04X\n", state._tmp_address);
     // printf("memory F0:F3 = %02X %02X %02X %02X\n", state.memory[0xF0], state.memory[0xF1], state.memory[0xF2], state.memory[0xF3]);
+    printf("0x4455 = %02X\n", state.memory[0x4455]);
 
     free(state.memory);
     return 0;
