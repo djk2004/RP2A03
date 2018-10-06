@@ -43,10 +43,10 @@ int main() {
 
     state.memory[0x0055] = 0xBB;
     
-    state.memory[index++] = 0xA6;  // LDX, $55
-    state.memory[index++] = 0x55;
-    state.memory[index++] = 0xE6;  // INC $55
-    state.memory[index++] = 0x55;
+    state.memory[index++] = 0xA6;  // LDX, $01
+    state.memory[index++] = 0x01;
+    state.memory[index++] = 0x16;  // ASL $54, X
+    state.memory[index++] = 0x54;
     state.memory[index++] = 0xA4;  // LDY, $55
     state.memory[index++] = 0x55;
 
