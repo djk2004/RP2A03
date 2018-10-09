@@ -9,8 +9,8 @@ extern const int ERROR;
 
 struct State {
     byte *memory;
-    unsigned short program_counter;
-    byte s, p, a, x, y;
+    unsigned short program_counter, s;
+    byte p, a, x, y;
     unsigned long cycles;
     bit carry, zero, interrupt_disable, decimal, break_command, overflow, negative;
 

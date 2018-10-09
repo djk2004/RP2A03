@@ -11,7 +11,7 @@ int main() {
         .memory = (byte*)calloc(MAX_MEMORY_BYTES, sizeof(byte)),
         .program_counter = 0,
         .cycles = 0,
-        .s = 0,
+        .s = 0x01FF,  // starts at the top of stack memory and grows downward to 0x100
         .p = 0,
         .a = 0,
         .x = 0,
