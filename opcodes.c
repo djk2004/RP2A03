@@ -3,42 +3,12 @@
 #include "opcodes.h"
 #include "binary.h"
 #include "state.h"
-#include "ops/and.h"
-#include "ops/ora.h"
-#include "ops/eor.h"
-#include "ops/adc.h"
-#include "ops/sbc.h"
-#include "ops/lda.h"
-#include "ops/ldx.h"
-#include "ops/ldy.h"
-#include "ops/stx.h"
-#include "ops/sty.h"
-#include "ops/sta.h"
-#include "ops/bit.h"
-#include "ops/cpy.h"
-#include "ops/cpx.h"
-#include "ops/cmp.h"
-#include "ops/sax.h"
-#include "ops/asl.h"
-#include "ops/rol.h"
-#include "ops/lsr.h"
-#include "ops/ror.h"
-#include "ops/inc.h"
-#include "ops/dec.h"
-#include "ops/clc.h"
-#include "ops/sec.h"
-#include "ops/dey.h"
-#include "ops/dex.h"
-#include "ops/tya.h"
-#include "ops/tay.h"
-#include "ops/clv.h"
-#include "ops/iny.h"
-#include "ops/inx.h"
-#include "ops/cld.h"
-#include "ops/sed.h"
-#include "ops/txa.h"
-#include "ops/tax.h"
-#include "ops/nop.h"
+#include "ops/arithmetic.h"
+#include "ops/branch.h"
+#include "ops/flags.h"
+#include "ops/logic.h"
+#include "ops/registers.h"
+#include "ops/unsupported.h"
 
 int get_low_nibble_address(struct State *state) {
     byte b = state->memory[state->program_counter++];
@@ -450,7 +420,7 @@ int get_opcode_instructions(instructions *ops, byte opcode) {
         case 0xC3: { return unimplemented(ops); }
         case 0xC4: { return zero_page(ops, cpy_memory); }
         case 0xC5: { return zero_page(ops, cmp_memory); }
-        case 0xC6: { return zero_page_read_modify_write(ops, dec_memory); }
+        case 0xC6: { return zero_page_read_modify_write(ops, dec); }
         case 0xC7: { return unimplemented(ops); }
         case 0xC8: { return immediate(ops, iny); }
         case 0xC9: { return immediate(ops, cmp_immediate); }
@@ -458,7 +428,7 @@ int get_opcode_instructions(instructions *ops, byte opcode) {
         case 0xCB: { return unimplemented(ops); }
         case 0xCC: { return absolute(ops, cpy_memory); }
         case 0xCD: { return absolute(ops, cmp_memory); }
-        case 0xCE: { return absolute_read_modify_write(ops, dec_memory); }
+        case 0xCE: { return absolute_read_modify_write(ops, dec); }
         case 0xCF: { return unimplemented(ops); }
         case 0xD0: { return unimplemented(ops); }
         case 0xD1: { return indirect_y(ops, cmp_memory); }
@@ -466,7 +436,7 @@ int get_opcode_instructions(instructions *ops, byte opcode) {
         case 0xD3: { return unimplemented(ops); }
         case 0xD4: { return unimplemented(ops); }
         case 0xD5: { return zero_page_x_indexed(ops, cmp_memory); }
-        case 0xD6: { return zero_page_x_indexed_read_modify_write(ops, dec_memory); }
+        case 0xD6: { return zero_page_x_indexed_read_modify_write(ops, dec); }
         case 0xD7: { return unimplemented(ops); }
         case 0xD8: { return immediate(ops, cld); }
         case 0xD9: { return absolute_y(ops, cmp_memory); }
@@ -474,7 +444,7 @@ int get_opcode_instructions(instructions *ops, byte opcode) {
         case 0xDB: { return unimplemented(ops); }
         case 0xDC: { return unimplemented(ops); }
         case 0xDD: { return absolute_x(ops, cmp_memory); }
-        case 0xDE: { return absolute_x_indexed_read_modify_write(ops, dec_memory); }
+        case 0xDE: { return absolute_x_indexed_read_modify_write(ops, dec); }
         case 0xDF: { return unimplemented(ops); }
         case 0xE0: { return immediate(ops, cpx_immediate); }
         case 0xE1: { return indirect_x(ops, sbc_memory); }
@@ -482,7 +452,7 @@ int get_opcode_instructions(instructions *ops, byte opcode) {
         case 0xE3: { return unimplemented(ops); }
         case 0xE4: { return zero_page(ops, cpx_memory); }
         case 0xE5: { return zero_page(ops, sbc_memory); }
-        case 0xE6: { return zero_page_read_modify_write(ops, inc_memory); }
+        case 0xE6: { return zero_page_read_modify_write(ops, inc); }
         case 0xE7: { return unimplemented(ops); }
         case 0xE8: { return immediate(ops, inx); }
         case 0xE9: { return immediate(ops, sbc_immediate); }
@@ -490,7 +460,7 @@ int get_opcode_instructions(instructions *ops, byte opcode) {
         case 0xEB: { return unimplemented(ops); }
         case 0xEC: { return absolute(ops, cpx_memory); }
         case 0xED: { return absolute(ops, sbc_memory); }
-        case 0xEE: { return absolute_read_modify_write(ops, inc_memory); }
+        case 0xEE: { return absolute_read_modify_write(ops, inc); }
         case 0xEF: { return unimplemented(ops); }
         case 0xF0: { return unimplemented(ops); }
         case 0xF1: { return indirect_y(ops, sbc_memory); }
@@ -498,7 +468,7 @@ int get_opcode_instructions(instructions *ops, byte opcode) {
         case 0xF3: { return unimplemented(ops); }
         case 0xF4: { return unimplemented(ops); }
         case 0xF5: { return zero_page_x_indexed(ops, sbc_memory); }
-        case 0xF6: { return zero_page_x_indexed_read_modify_write(ops, inc_memory); }
+        case 0xF6: { return zero_page_x_indexed_read_modify_write(ops, inc); }
         case 0xF7: { return unimplemented(ops); }
         case 0xF8: { return immediate(ops, sed); }
         case 0xF9: { return absolute_y(ops, sbc_memory); }
@@ -506,7 +476,7 @@ int get_opcode_instructions(instructions *ops, byte opcode) {
         case 0xFB: { return unimplemented(ops); }
         case 0xFC: { return unimplemented(ops); }
         case 0xFD: { return absolute_x(ops, sbc_memory); }
-        case 0xFE: { return absolute_x_indexed_read_modify_write(ops, inc_memory); }
+        case 0xFE: { return absolute_x_indexed_read_modify_write(ops, inc); }
         case 0xFF: { return unimplemented(ops); }
     }
     return unimplemented(ops);

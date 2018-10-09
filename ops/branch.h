@@ -1,5 +1,5 @@
-#ifndef NOP_H
-#define NOP_H
+#ifndef BRANCH_H
+#define BRANCH_H
 
 #include "../state.h"
 
