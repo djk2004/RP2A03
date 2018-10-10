@@ -23,6 +23,13 @@ int get_high_nibble_address(struct State *state) {
     return OK;
 }
 
+int get_high_nibble_address_to_pc(struct State *state) {
+    byte b = state->memory[state->program_counter++];
+    state->_tmp_address ^= (b << 8);
+    state->program_counter = state->_tmp_address;
+    return OK;
+}
+
 int index_zero_page_by_x(struct State *state) {
     byte t = state->_tmp_address & 0xFF;
     state->_tmp_address = add(t, state->x, 0).result;
@@ -147,6 +154,13 @@ int indirect_y(instructions *ops, int f(struct State *state)) {
     ops[i++] = get_indirect_high_nibble;
     ops[i++] = index_address_y;
     ops[i++] = f;
+    return i;
+}
+
+int jmp_absolute(instructions *ops, int f(struct State *state)) {
+    int i = 0;
+    ops[i++] = get_low_nibble_address;
+    ops[i++] = get_high_nibble_address_to_pc;
     return i;
 }
 
@@ -325,7 +339,7 @@ int get_opcode_instructions(instructions *ops, byte opcode) {
         case 0x49: { return immediate(ops, eor_immediate); }
         case 0x4A: { return immediate(ops, lsr_accumulator); }
         case 0x4B: { return unimplemented(ops); }
-        case 0x4C: { return unimplemented(ops); }
+        case 0x4C: { return jmp_absolute(ops, nop); }
         case 0x4D: { return absolute(ops, eor_memory); }
         case 0x4E: { return absolute_read_modify_write(ops, lsr_memory); }
         case 0x4F: { return unimplemented(ops); }
