@@ -15,6 +15,11 @@ int clv(struct State *state) {
     return OK;
 }
 
+int cli(struct State *state) {
+    state->interrupt_disable = 0;
+    return OK;
+}
+
 int sec(struct State *state) {
     state->carry = 1;
     return OK;
@@ -22,6 +27,11 @@ int sec(struct State *state) {
 
 int sed(struct State *state) {
     state->decimal = 1;
+    return OK;
+}
+
+int sei(struct State *state) {
+    state->interrupt_disable = 1;
     return OK;
 }
 

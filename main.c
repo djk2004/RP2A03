@@ -15,7 +15,8 @@ int main() {
         .p = 0,
         .a = 0,
         .x = 0,
-        .y = 0
+        .y = 0,
+        .brk = 1
     };
 
     // program
@@ -43,10 +44,10 @@ int main() {
 
     // state.memory[0x4455] = 0x11;
     
-    state.memory[index++] = 0xA2;  // LDX, #$45
-    state.memory[index++] = 0x45;
-    state.memory[index++] = 0x9A;  // TXS
-    state.memory[index++] = 0xBA;  // TSX
+    state.memory[index++] = 0xF8;  // SED
+    state.memory[index++] = 0x08;  // PHP
+    state.memory[index++] = 0x68;  // PLA
+
 
     state.program_counter = 0;
     int run_state = 0;
@@ -76,14 +77,17 @@ int main() {
     printf("y = %02X\n", state.y);
     printf("s = %04X\n", state.s);
     printf("negative = %d\n", state.negative);
-    printf("zero = %d\n", state.zero);
     printf("overflow = %d\n", state.overflow);
+    printf("break = %d\n", state.brk);
+    printf("decimal = %d\n", state.decimal);
+    printf("interrupt = %d\n", state.interrupt_disable);
+    printf("zero = %d\n", state.zero);
     printf("carry = %d\n", state.carry);
     printf("program_counter = %02X\n", state.program_counter);
     printf("cycles = %lu\n", state.cycles);
     printf("_tmp_address = %04X\n", state._tmp_address);
     // printf("memory F0:F3 = %02X %02X %02X %02X\n", state.memory[0xF0], state.memory[0xF1], state.memory[0xF2], state.memory[0xF3]);
-    printf("0x4455 = %02X\n", state.memory[0x4455]);
+    printf("0x01FF = %02X\n", state.memory[0x01FF]);
 
     free(state.memory);
     return 0;

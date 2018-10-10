@@ -95,6 +95,17 @@ int write_value_to_address(struct State *state) {
     return OK;
 }
 
+int do_nothing(struct State *state) {
+    // useful for operations that read the next instruction byte and do nothing
+    return OK;
+}
+
+int increment_stack_pointer(struct State *state) {
+    struct Result r = add(state->s, 0x01, 0);
+    state->s = 0x0100 | r.result;
+    return OK;
+}
+
 int unimplemented_message(struct State *state) {
     printf("unimplemented opcode %02X\n", state->memory[state->program_counter - 1]);
     return ERROR;
@@ -221,6 +232,21 @@ int absolute_x_indexed_read_modify_write(instructions *ops, int f(struct State *
     return i;
 }
 
+int push_on_stack(instructions *ops, int f(struct State *state)) {
+    int i = 0;
+    ops[i++] = do_nothing;
+    ops[i++] = f;
+    return i;
+}
+
+int pull_from_stack(instructions *ops, int f(struct State *state)) {
+    int i = 0;
+    ops[i++] = do_nothing;
+    ops[i++] = increment_stack_pointer;
+    ops[i++] = f;
+    return i;
+}
+
 int get_opcode_instructions(instructions *ops, byte opcode) {
     switch (opcode) {
         case 0x00: { return unimplemented(ops); }
@@ -231,7 +257,7 @@ int get_opcode_instructions(instructions *ops, byte opcode) {
         case 0x05: { return zero_page(ops, ora_memory); }
         case 0x06: { return zero_page_read_modify_write(ops, asl_memory); }
         case 0x07: { return unimplemented(ops); }
-        case 0x08: { return unimplemented(ops); }
+        case 0x08: { return push_on_stack(ops, php); }
         case 0x09: { return immediate(ops, ora_immediate); }
         case 0x0A: { return immediate(ops, asl_accumulator); }
         case 0x0B: { return unimplemented(ops); }
@@ -263,7 +289,7 @@ int get_opcode_instructions(instructions *ops, byte opcode) {
         case 0x25: { return zero_page(ops, and_memory); }
         case 0x26: { return zero_page_read_modify_write(ops, rol_memory); }
         case 0x27: { return unimplemented(ops); }
-        case 0x28: { return unimplemented(ops); }
+        case 0x28: { return pull_from_stack(ops, plp); }
         case 0x29: { return immediate(ops, and_immediate); }
         case 0x2A: { return immediate(ops, rol_accumulator); }
         case 0x2B: { return unimplemented(ops); }
@@ -295,7 +321,7 @@ int get_opcode_instructions(instructions *ops, byte opcode) {
         case 0x45: { return zero_page(ops, eor_memory); }
         case 0x46: { return zero_page_read_modify_write(ops, lsr_memory); }
         case 0x47: { return unimplemented(ops); }
-        case 0x48: { return unimplemented(ops); }
+        case 0x48: { return push_on_stack(ops, pha); }
         case 0x49: { return immediate(ops, eor_immediate); }
         case 0x4A: { return immediate(ops, lsr_accumulator); }
         case 0x4B: { return unimplemented(ops); }
@@ -311,7 +337,7 @@ int get_opcode_instructions(instructions *ops, byte opcode) {
         case 0x55: { return zero_page_x_indexed(ops, eor_memory); }
         case 0x56: { return zero_page_x_indexed_read_modify_write(ops, lsr_memory); }
         case 0x57: { return unimplemented(ops); }
-        case 0x58: { return unimplemented(ops); }
+        case 0x58: { return immediate(ops, cli); }
         case 0x59: { return absolute_y(ops, eor_memory); }
         case 0x5A: { return unimplemented(ops); }
         case 0x5B: { return unimplemented(ops); }
@@ -327,7 +353,7 @@ int get_opcode_instructions(instructions *ops, byte opcode) {
         case 0x65: { return zero_page(ops, adc_memory); }
         case 0x66: { return zero_page_read_modify_write(ops, ror_memory); }
         case 0x67: { return unimplemented(ops); }
-        case 0x68: { return unimplemented(ops); }
+        case 0x68: { return pull_from_stack(ops, pla); }
         case 0x69: { return immediate(ops, adc_immediate); }
         case 0x6A: { return immediate(ops, ror_accumulator); }
         case 0x6B: { return unimplemented(ops); }
@@ -343,7 +369,7 @@ int get_opcode_instructions(instructions *ops, byte opcode) {
         case 0x75: { return zero_page_x_indexed(ops, adc_memory); }
         case 0x76: { return zero_page_x_indexed_read_modify_write(ops, ror_memory); }
         case 0x77: { return unimplemented(ops); }
-        case 0x78: { return unimplemented(ops); }
+        case 0x78: { return immediate(ops, sei); }
         case 0x79: { return absolute_y(ops, adc_memory); }
         case 0x7A: { return unimplemented(ops); }
         case 0x7B: { return unimplemented(ops); }
