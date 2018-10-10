@@ -8,6 +8,7 @@
 #include "ops/flags.h"
 #include "ops/logic.h"
 #include "ops/registers.h"
+#include "ops/stack.h"
 #include "ops/unsupported.h"
 
 int get_low_nibble_address(struct State *state) {
@@ -376,7 +377,7 @@ int get_opcode_instructions(instructions *ops, byte opcode) {
         case 0x97: { return zero_page_y_indexed(ops, sax_memory); }
         case 0x98: { return immediate(ops, tya); }
         case 0x99: { return absolute_y(ops, sta_memory); }
-        case 0x9A: { return unimplemented(ops); }
+        case 0x9A: { return immediate(ops, txs); }
         case 0x9B: { return unimplemented(ops); }
         case 0x9C: { return unimplemented(ops); }
         case 0x9D: { return absolute_x(ops, sta_memory); }
@@ -408,7 +409,7 @@ int get_opcode_instructions(instructions *ops, byte opcode) {
         case 0xB7: { return unimplemented(ops); }
         case 0xB8: { return immediate(ops, clv); }
         case 0xB9: { return absolute_y(ops, lda_memory); }
-        case 0xBA: { return unimplemented(ops); }
+        case 0xBA: { return immediate(ops, tsx); }
         case 0xBB: { return unimplemented(ops); }
         case 0xBC: { return absolute_x(ops, ldy_memory); }
         case 0xBD: { return absolute_x(ops, lda_memory); }

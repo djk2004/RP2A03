@@ -41,13 +41,12 @@ int main() {
     // state.memory[index++] = 0x65;  // ADC $F0
     // state.memory[index++] = 0xF0;
 
-    state.memory[0x4455] = 0x11;
+    // state.memory[0x4455] = 0x11;
     
-    state.memory[index++] = 0xA2;  // LDX, #$01
-    state.memory[index++] = 0x01;
-    state.memory[index++] = 0x1E;  // ASL $4454, X
-    state.memory[index++] = 0x54;
-    state.memory[index++] = 0x44;
+    state.memory[index++] = 0xA2;  // LDX, #$45
+    state.memory[index++] = 0x45;
+    state.memory[index++] = 0x9A;  // TXS
+    state.memory[index++] = 0xBA;  // TSX
 
     state.program_counter = 0;
     int run_state = 0;
@@ -75,6 +74,7 @@ int main() {
     printf("accumulator = %02X\n", state.a);
     printf("x = %02X\n", state.x);
     printf("y = %02X\n", state.y);
+    printf("s = %04X\n", state.s);
     printf("negative = %d\n", state.negative);
     printf("zero = %d\n", state.zero);
     printf("overflow = %d\n", state.overflow);
