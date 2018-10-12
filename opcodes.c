@@ -30,6 +30,11 @@ int get_high_nibble_address_to_pc(struct State *state) {
     return OK;
 }
 
+int set_tmp_address_contents_to_pc(struct State *state) {
+    state->program_counter = state->memory[state->_tmp_address];
+    return OK;
+}
+
 int index_zero_page_by_x(struct State *state) {
     byte t = state->_tmp_address & 0xFF;
     state->_tmp_address = add(t, state->x, 0).result;
@@ -155,6 +160,15 @@ int jmp_absolute(instructions *ops, int f(struct State *state)) {
     int i = 0;
     ops[i++] = get_low_nibble_address;
     ops[i++] = get_high_nibble_address_to_pc;
+    return i;
+}
+
+int jmp_indirect(instructions *ops, int f(struct State *state)) {
+    int i = 0;
+    ops[i++] = get_low_nibble_address;
+    ops[i++] = get_high_nibble_address;
+    ops[i++] = do_nothing;
+    ops[i++] = set_tmp_address_contents_to_pc;
     return i;
 }
 
@@ -365,7 +379,7 @@ int get_opcode_instructions(instructions *ops, byte opcode) {
         case 0x69: { return immediate(ops, adc_immediate); }
         case 0x6A: { return immediate(ops, ror_accumulator); }
         case 0x6B: { return unimplemented(ops); }
-        case 0x6C: { return unimplemented(ops); }
+        case 0x6C: { return jmp_indirect(ops, nop); }
         case 0x6D: { return absolute(ops, adc_memory); }
         case 0x6E: { return absolute_read_modify_write(ops, ror_memory); }
         case 0x6F: { return unimplemented(ops); }
