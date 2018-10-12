@@ -51,3 +51,10 @@ int pla(struct State *state) {
     state->a = state->memory[state->s];
     return OK;
 }
+
+int increment_stack_pointer(struct State *state) {
+    byte low = 0x00FF & state->s;
+    struct Result r = add(low, 0x01, 0);
+    state->s = 0x0100 | r.result;
+    return OK;
+}

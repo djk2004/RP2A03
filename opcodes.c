@@ -107,13 +107,6 @@ int do_nothing(struct State *state) {
     return OK;
 }
 
-int increment_stack_pointer(struct State *state) {
-    byte low = 0x00FF & state->s;
-    struct Result r = add(low, 0x01, 0);
-    state->s = 0x0100 | r.result;
-    return OK;
-}
-
 int unimplemented_message(struct State *state) {
     printf("unimplemented opcode %02X\n", state->memory[state->program_counter]);
     return ERROR;

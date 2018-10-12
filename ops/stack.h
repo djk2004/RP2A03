@@ -19,4 +19,6 @@ int pla(struct State *state);
 // pulls the processor status from the stack
 int plp(struct State *state);
 
+int increment_stack_pointer(struct State *state);
+
 #endif
