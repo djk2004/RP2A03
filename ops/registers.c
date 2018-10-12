@@ -56,7 +56,8 @@ int ldy_memory(struct State *state) {
 }
 
 int ldy_immediate(struct State *state) {
-    ldy(state, increment_program_counter(state));
+    ldy(state, state->program_counter);
+    increment_program_counter(state);
     return OK;
 }
 
@@ -73,7 +74,8 @@ int ldx_memory(struct State *state) {
 }
 
 int ldx_immediate(struct State *state) {
-    ldx(state, increment_program_counter(state));
+    ldx(state, state->program_counter);
+    increment_program_counter(state);
     return OK;
 }
 
@@ -85,7 +87,8 @@ int lda(struct State *state, unsigned short address) {
 }
 
 int lda_immediate(struct State *state) {
-    lda(state, increment_program_counter(state));
+    lda(state, state->program_counter);
+    increment_program_counter(state);
     return OK;
 }
 
@@ -109,7 +112,8 @@ int cmp_memory(struct State *state) {
 }
 
 int cmp_immediate(struct State *state) {
-    cmp(state, increment_program_counter(state));
+    cmp(state, state->program_counter);
+    increment_program_counter(state);
     return OK;
 }
 
@@ -128,7 +132,8 @@ int cpx_memory(struct State *state) {
 }
 
 int cpx_immediate(struct State *state) {
-    cpx(state, increment_program_counter(state));
+    cpx(state, state->program_counter);
+    increment_program_counter(state);
     return OK;
 }
 
@@ -147,6 +152,7 @@ int cpy_memory(struct State *state) {
 }
 
 int cpy_immediate(struct State *state) {
-    cpy(state, increment_program_counter(state));
+    cpy(state, state->program_counter);
+    increment_program_counter(state);
     return OK;
 }

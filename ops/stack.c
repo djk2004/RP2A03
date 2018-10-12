@@ -20,14 +20,7 @@ int push(struct State *state, byte b) {
 }
 
 int php(struct State *state) {
-    byte status = state->negative << 7;
-    status |= state->overflow << 6;
-    status |= 0x20;  // this bit is always 1
-    status |= state->brk << 4;
-    status |= state->decimal << 3;
-    status |= state->interrupt_disable << 2;
-    status |= state->zero << 1;
-    status |= state->carry;
+    byte status = get_processor_status(state);
     return push(state, status);
 }
 

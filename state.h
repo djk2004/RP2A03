@@ -18,6 +18,7 @@ struct State {
     unsigned short _tmp_address, _tmp_byte;
 };
 
-int increment_program_counter(struct State *state);
+void increment_program_counter(struct State *state);
+byte get_processor_status(struct State *state);
 
 #endif

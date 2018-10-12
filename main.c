@@ -22,32 +22,17 @@ int main() {
     // program
     int index = 0;
 
-    // subtraction test, causes overflow and carry  -2 - (-128) = 126
-    // state.memory[index++] = 0xA9;  // LDA #$FE
-    // state.memory[index++] = 0xFE;
-    // state.memory[index++] = 0xA2;  // LDX #$80
-    // state.memory[index++] = 0x80;
-    // state.memory[index++] = 0x86;  // STX $F0
-    // state.memory[index++] = 0xF0;
-    // state.memory[index++] = 0xE5;  // SBC $F0
-    // state.memory[index++] = 0xF0;
-
-    // causes an overflow and a carry  -2 + -128 = -130
-    // state.memory[index++] = 0xA9;  // LDA #$80
-    // state.memory[index++] = 0x80;
-    // state.memory[index++] = 0xA2;  // LDX #$FE
-    // state.memory[index++] = 0xFE;
-    // state.memory[index++] = 0x86;  // STX $F0
-    // state.memory[index++] = 0xF0;
-    // state.memory[index++] = 0x65;  // ADC $F0
-    // state.memory[index++] = 0xF0;
-
-    // state.memory[0x4455] = 0x11;
+    state.memory[0xFFFE] = 0x10;
+    state.memory[0xFFFF] = 0x22;
     
-    state.memory[index++] = 0xF8;  // SED
-    state.memory[index++] = 0x08;  // PHP
-    state.memory[index++] = 0x68;  // PLA
+    state.memory[index++] = 0xA0; // LDY $#88
+    state.memory[index++] = 0x88;
+    state.memory[index++] = 0x00;  // BRK
 
+    index = 0x2210;
+    state.memory[index++] = 0xA2; // LDX $#07
+    state.memory[index++] = 0x07;
+    state.memory[index++] = 0x02; // UNIMPLEMENTED
 
     state.program_counter = 0;
     int run_state = 0;
@@ -57,7 +42,9 @@ int main() {
             // TODO: some interrupt tasks here, increment cycles as needed
             state.cycles++;
         } else {
-            byte opcode = state.memory[increment_program_counter(&state)];
+            byte opcode = state.memory[state.program_counter];
+            printf("%04X:  %02X\n", state.program_counter, opcode);
+            increment_program_counter(&state);
             state.cycles++;
             int length = get_opcode_instructions(current, opcode);
             for (int i=0; i < length; i++) {

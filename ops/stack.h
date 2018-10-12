@@ -20,5 +20,6 @@ int pla(struct State *state);
 int plp(struct State *state);
 
 int increment_stack_pointer(struct State *state);
+int push(struct State *state, byte b);
 
 #endif

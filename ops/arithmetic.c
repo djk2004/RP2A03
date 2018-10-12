@@ -18,7 +18,8 @@ int adc_memory(struct State *state) {
 }
 
 int adc_immediate(struct State *state) {
-    adc(state, increment_program_counter(state));
+    adc(state, state->program_counter);
+    increment_program_counter(state);
     return OK;
 }
 
@@ -39,7 +40,8 @@ int sbc_memory(struct State *state) {
 }
 
 int sbc_immediate(struct State *state) {
-    sbc(state, increment_program_counter(state));
+    sbc(state, state->program_counter);
+    increment_program_counter(state);
     return OK;
 }
 

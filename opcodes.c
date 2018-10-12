@@ -12,19 +12,22 @@
 #include "ops/unsupported.h"
 
 int get_low_nibble_address(struct State *state) {
-    byte b = state->memory[increment_program_counter(state)];
+    byte b = state->memory[state->program_counter];
+    increment_program_counter(state);
     state->_tmp_address = b;  // resets the high nibble to 0x00
     return OK;
 }
 
 int get_high_nibble_address(struct State *state) {
-    byte b = state->memory[increment_program_counter(state)];
+    byte b = state->memory[state->program_counter];
+    increment_program_counter(state);
     state->_tmp_address ^= (b << 8);
     return OK;
 }
 
 int get_high_nibble_address_to_pc(struct State *state) {
-    byte b = state->memory[increment_program_counter(state)];
+    byte b = state->memory[state->program_counter];
+    increment_program_counter(state);
     state->_tmp_address ^= (b << 8);
     state->program_counter = state->_tmp_address;
     return OK;
@@ -107,13 +110,36 @@ int write_value_to_address(struct State *state) {
     return OK;
 }
 
+int brk_push_pch(struct State *state) {
+    state->brk = 1;
+    byte pch = (state->program_counter & 0xFF00) >> 8;
+    return push(state, pch);
+}
+
+int brk_push_pcl(struct State *state) {
+    byte pch = state->program_counter & 0x00FF;
+    return push(state, pch);
+}
+
+int brk_fetch_pcl(struct State *state) {
+    byte low = state->memory[0xFFFE];
+    state->program_counter = low;
+    return OK;
+}
+
+int brk_fetch_pch(struct State *state) {
+    byte high = state->memory[0xFFFF];
+    state->program_counter |= (high << 8);
+    return OK;
+}
+
 int do_nothing(struct State *state) {
     // useful for operations that read the next instruction byte and do nothing
     return OK;
 }
 
 int unimplemented_message(struct State *state) {
-    printf("unimplemented opcode %02X\n", state->memory[state->program_counter]);
+    printf("unimplemented opcode\n");
     return ERROR;
 }
 
@@ -156,14 +182,14 @@ int indirect_y(instructions *ops, int f(struct State *state)) {
     return i;
 }
 
-int jmp_absolute(instructions *ops, int f(struct State *state)) {
+int jmp_absolute(instructions *ops) {
     int i = 0;
     ops[i++] = get_low_nibble_address;
     ops[i++] = get_high_nibble_address_to_pc;
     return i;
 }
 
-int jmp_indirect(instructions *ops, int f(struct State *state)) {
+int jmp_indirect(instructions *ops) {
     int i = 0;
     ops[i++] = get_low_nibble_address;
     ops[i++] = get_high_nibble_address;
@@ -269,9 +295,20 @@ int pull_from_stack(instructions *ops, int f(struct State *state)) {
     return i;
 }
 
+int brk(instructions *ops) {
+    int i = 0;
+    ops[i++] = get_low_nibble_address;
+    ops[i++] = brk_push_pch;
+    ops[i++] = brk_push_pcl;
+    ops[i++] = php;
+    ops[i++] = brk_fetch_pcl;
+    ops[i++] = brk_fetch_pch;
+    return i;
+}
+
 int get_opcode_instructions(instructions *ops, byte opcode) {
     switch (opcode) {
-        case 0x00: { return unimplemented(ops); }
+        case 0x00: { return brk(ops); }
         case 0x01: { return indirect_x(ops, ora_memory); }
         case 0x02: { return unimplemented(ops); }
         case 0x03: { return unimplemented(ops); }
@@ -347,7 +384,7 @@ int get_opcode_instructions(instructions *ops, byte opcode) {
         case 0x49: { return immediate(ops, eor_immediate); }
         case 0x4A: { return immediate(ops, lsr_accumulator); }
         case 0x4B: { return unimplemented(ops); }
-        case 0x4C: { return jmp_absolute(ops, nop); }
+        case 0x4C: { return jmp_absolute(ops); }
         case 0x4D: { return absolute(ops, eor_memory); }
         case 0x4E: { return absolute_read_modify_write(ops, lsr_memory); }
         case 0x4F: { return unimplemented(ops); }
@@ -379,7 +416,7 @@ int get_opcode_instructions(instructions *ops, byte opcode) {
         case 0x69: { return immediate(ops, adc_immediate); }
         case 0x6A: { return immediate(ops, ror_accumulator); }
         case 0x6B: { return unimplemented(ops); }
-        case 0x6C: { return jmp_indirect(ops, nop); }
+        case 0x6C: { return jmp_indirect(ops); }
         case 0x6D: { return absolute(ops, adc_memory); }
         case 0x6E: { return absolute_read_modify_write(ops, ror_memory); }
         case 0x6F: { return unimplemented(ops); }
