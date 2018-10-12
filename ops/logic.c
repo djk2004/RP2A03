@@ -14,7 +14,7 @@ int and_memory(struct State *state) {
 }
 
 int and_immediate(struct State *state) {
-    and(state, state->program_counter++);
+    and(state, increment_program_counter(state));
     return OK;
 }
 
@@ -31,7 +31,7 @@ int ora_memory(struct State *state) {
 }
 
 int ora_immediate(struct State *state) {
-    ora(state, state->program_counter++);
+    ora(state, increment_program_counter(state));
     return OK;
 }
 
@@ -48,7 +48,7 @@ int eor_memory(struct State *state) {
 }
 
 int eor_immediate(struct State *state) {
-    eor(state, state->program_counter++);
+    eor(state, increment_program_counter(state));
     return OK;
 }
 

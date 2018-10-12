@@ -18,4 +18,6 @@ struct State {
     unsigned short _tmp_address, _tmp_byte;
 };
 
+int increment_program_counter(struct State *state);
+
 #endif

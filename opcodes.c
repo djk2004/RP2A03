@@ -12,19 +12,19 @@
 #include "ops/unsupported.h"
 
 int get_low_nibble_address(struct State *state) {
-    byte b = state->memory[state->program_counter++];
+    byte b = state->memory[increment_program_counter(state)];
     state->_tmp_address = b;  // resets the high nibble to 0x00
     return OK;
 }
 
 int get_high_nibble_address(struct State *state) {
-    byte b = state->memory[state->program_counter++];
+    byte b = state->memory[increment_program_counter(state)];
     state->_tmp_address ^= (b << 8);
     return OK;
 }
 
 int get_high_nibble_address_to_pc(struct State *state) {
-    byte b = state->memory[state->program_counter++];
+    byte b = state->memory[increment_program_counter(state)];
     state->_tmp_address ^= (b << 8);
     state->program_counter = state->_tmp_address;
     return OK;

@@ -57,7 +57,7 @@ int main() {
             // TODO: some interrupt tasks here, increment cycles as needed
             state.cycles++;
         } else {
-            byte opcode = state.memory[state.program_counter++];
+            byte opcode = state.memory[increment_program_counter(&state)];
             state.cycles++;
             int length = get_opcode_instructions(current, opcode);
             for (int i=0; i < length; i++) {
@@ -83,7 +83,7 @@ int main() {
     printf("interrupt = %d\n", state.interrupt_disable);
     printf("zero = %d\n", state.zero);
     printf("carry = %d\n", state.carry);
-    printf("program_counter = %02X\n", state.program_counter);
+    printf("program_counter = %04X\n", state.program_counter);
     printf("cycles = %lu\n", state.cycles);
     printf("_tmp_address = %04X\n", state._tmp_address);
     // printf("memory F0:F3 = %02X %02X %02X %02X\n", state.memory[0xF0], state.memory[0xF1], state.memory[0xF2], state.memory[0xF3]);
