@@ -114,7 +114,7 @@ int increment_stack_pointer(struct State *state) {
 }
 
 int unimplemented_message(struct State *state) {
-    printf("unimplemented opcode %02X\n", state->memory[state->program_counter - 1]);
+    printf("unimplemented opcode %02X\n", state->memory[state->program_counter]);
     return ERROR;
 }
 
