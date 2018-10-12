@@ -13,8 +13,9 @@ int txs(struct State *state) {
 
 int push(struct State *state, byte b) {
     state->memory[state->s] = b;
-    struct Result r = subtract(state->s, 0x01, 0);
-    state->s = r.result;
+    byte low = state->s & 0x00FF;
+    struct Result r = subtract(low, 0x01, 0);
+    state->s = 0x0100 | r.result;
     return OK;
 }
 
