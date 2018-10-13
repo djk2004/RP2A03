@@ -306,6 +306,56 @@ int brk(instructions *ops) {
     return i;
 }
 
+int branch_on_false(struct State *state) {
+    bit is_condition_true = 0x01 & state->_tmp_byte;
+    if (is_condition_true) {
+        return OK_IGNORE_CYCLE;
+    }
+    increment_program_counter(state);
+    return OK_IGNORE_AND_BREAK;
+}
+
+int branch_on_true(struct State *state) {
+    byte pcl = 0x00FF & state->program_counter;
+    byte offset = 0x00FF & state->_tmp_address;
+    struct Result r = add(pcl, offset, 0);
+    state->program_counter = (0xFF00 & state->program_counter) | r.result;
+    state->_tmp_byte = r.carry;
+    return OK;
+}
+
+int branch_fix_pc_high_nibble(struct State *state) {
+    bit carry = 0x01 & state->_tmp_byte;
+    if (carry) {
+        byte pch = (0xFF00 & state->program_counter) >> 8;
+        struct Result r = add(pch, 0x01, 0);
+        state->program_counter = (r.result << 8) | (state->program_counter & 0x00FF);
+    } else {
+        state->_tmp_byte = 0x00;
+        increment_program_counter(state);
+    }
+    return OK;
+}
+
+int branch_on_next_page(struct State *state) {
+    bit crossed_page_boundary = 0x01 & state->_tmp_byte;
+    if (crossed_page_boundary) {
+        increment_program_counter(state);
+    }
+    return OK;
+}
+
+int branch(instructions *ops, int f(struct State *state)) {
+    int i = 0;
+    ops[i++] = get_low_nibble_address;
+    ops[i++] = f;
+    ops[i++] = branch_on_false;
+    ops[i++] = branch_on_true;
+    ops[i++] = branch_fix_pc_high_nibble;
+    ops[i++] = branch_on_next_page;
+    return i;  
+}
+
 int get_opcode_instructions(instructions *ops, byte opcode) {
     switch (opcode) {
         case 0x00: { return brk(ops); }
@@ -324,7 +374,7 @@ int get_opcode_instructions(instructions *ops, byte opcode) {
         case 0x0D: { return absolute(ops, ora_memory); }
         case 0x0E: { return absolute_read_modify_write(ops, asl_memory); }
         case 0x0F: { return unimplemented(ops); }
-        case 0x10: { return unimplemented(ops); }
+        case 0x10: { return branch(ops, bpl); }
         case 0x11: { return indirect_y(ops, ora_memory); }
         case 0x12: { return unimplemented(ops); }
         case 0x13: { return unimplemented(ops); }
@@ -356,7 +406,7 @@ int get_opcode_instructions(instructions *ops, byte opcode) {
         case 0x2D: { return absolute(ops, and_memory); }
         case 0x2E: { return absolute_read_modify_write(ops, rol_memory); }
         case 0x2F: { return unimplemented(ops); }
-        case 0x30: { return unimplemented(ops); }
+        case 0x30: { return branch(ops, bmi); }
         case 0x31: { return indirect_y(ops, and_memory); }
         case 0x32: { return unimplemented(ops); }
         case 0x33: { return unimplemented(ops); }
@@ -388,7 +438,7 @@ int get_opcode_instructions(instructions *ops, byte opcode) {
         case 0x4D: { return absolute(ops, eor_memory); }
         case 0x4E: { return absolute_read_modify_write(ops, lsr_memory); }
         case 0x4F: { return unimplemented(ops); }
-        case 0x50: { return unimplemented(ops); }
+        case 0x50: { return branch(ops, bvc); }
         case 0x51: { return indirect_y(ops, eor_memory); }
         case 0x52: { return unimplemented(ops); }
         case 0x53: { return unimplemented(ops); }
@@ -420,7 +470,7 @@ int get_opcode_instructions(instructions *ops, byte opcode) {
         case 0x6D: { return absolute(ops, adc_memory); }
         case 0x6E: { return absolute_read_modify_write(ops, ror_memory); }
         case 0x6F: { return unimplemented(ops); }
-        case 0x70: { return unimplemented(ops); }
+        case 0x70: { return branch(ops, bvs); }
         case 0x71: { return indirect_y(ops, adc_memory); }
         case 0x72: { return unimplemented(ops); }
         case 0x73: { return unimplemented(ops); }
@@ -452,7 +502,7 @@ int get_opcode_instructions(instructions *ops, byte opcode) {
         case 0x8D: { return absolute(ops, sta_memory); }
         case 0x8E: { return absolute(ops, stx_memory); }
         case 0x8F: { return unimplemented(ops); }
-        case 0x90: { return unimplemented(ops); }
+        case 0x90: { return branch(ops, bcc); }
         case 0x91: { return indirect_y(ops, sta_memory); }
         case 0x92: { return unimplemented(ops); }
         case 0x93: { return unimplemented(ops); }
@@ -484,7 +534,7 @@ int get_opcode_instructions(instructions *ops, byte opcode) {
         case 0xAD: { return absolute(ops, lda_memory); }
         case 0xAE: { return absolute(ops, ldx_memory); }
         case 0xAF: { return unimplemented(ops); }
-        case 0xB0: { return unimplemented(ops); }
+        case 0xB0: { return branch(ops, bcs); }
         case 0xB1: { return indirect_y(ops, lda_memory); }
         case 0xB2: { return unimplemented(ops); }
         case 0xB3: { return unimplemented(ops); }
@@ -516,7 +566,7 @@ int get_opcode_instructions(instructions *ops, byte opcode) {
         case 0xCD: { return absolute(ops, cmp_memory); }
         case 0xCE: { return absolute_read_modify_write(ops, dec); }
         case 0xCF: { return unimplemented(ops); }
-        case 0xD0: { return unimplemented(ops); }
+        case 0xD0: { return branch(ops, bne); }
         case 0xD1: { return indirect_y(ops, cmp_memory); }
         case 0xD2: { return unimplemented(ops); }
         case 0xD3: { return unimplemented(ops); }
@@ -548,7 +598,7 @@ int get_opcode_instructions(instructions *ops, byte opcode) {
         case 0xED: { return absolute(ops, sbc_memory); }
         case 0xEE: { return absolute_read_modify_write(ops, inc); }
         case 0xEF: { return unimplemented(ops); }
-        case 0xF0: { return unimplemented(ops); }
+        case 0xF0: { return branch(ops, beq); }
         case 0xF1: { return indirect_y(ops, sbc_memory); }
         case 0xF2: { return unimplemented(ops); }
         case 0xF3: { return unimplemented(ops); }

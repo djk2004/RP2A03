@@ -3,6 +3,7 @@
 
 const int OK = 0;
 const int OK_IGNORE_CYCLE = 1;
+const int OK_IGNORE_AND_BREAK = 2;
 const int ERROR = -1;
 
 void increment_program_counter(struct State *state) {
@@ -28,4 +29,8 @@ byte get_processor_status(struct State *state) {
     p |= state->zero << 1;
     p |= state->carry;
     return p;
+}
+
+void increment_cycle(struct State *state) {
+    // TODO: handle clock cycle here?
 }
