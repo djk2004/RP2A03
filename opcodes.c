@@ -311,7 +311,8 @@ int branch_on_false(struct State *state) {
     if (is_condition_true) {
         return OK_IGNORE_CYCLE;
     }
-    increment_program_counter(state);
+    // At this point, the branch statement will end, and the program counter will automatically
+    // increment to the next opcode
     return OK_IGNORE_AND_BREAK;
 }
 

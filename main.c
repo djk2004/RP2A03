@@ -29,11 +29,10 @@ int main() {
     state.memory[index++] = 0x30; // BMI $A1
     // state.memory[index++] = 0x10; // BPL $A1
     state.memory[index++] = 0xA1;
-    state.memory[index++] = 0xEA; // NOP (skipped)
     state.memory[index++] = 0xAA; // TAX
     state.memory[index++] = 0x02; // UNIMPLEMENTED
 
-    index += 0x9F; // should be 0x00A0
+    index += 0xA0;
     state.memory[index++] = 0xA8; // TAY
     state.memory[index++] = 0x02; // UNIMPLEMENTED
 
