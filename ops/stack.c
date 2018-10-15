@@ -1,6 +1,13 @@
 #include "../state.h"
 #include "../binary.h"
 
+int increment_stack_pointer(struct State *state) {
+    byte low = 0x00FF & state->s;
+    struct Result r = add(low, 0x01, 0);
+    state->s = 0x0100 | r.result;
+    return OK;
+}
+
 int tsx(struct State *state) {
     state->x = 0x0100 ^ state->s;
     return OK;
@@ -19,6 +26,16 @@ int push(struct State *state, byte b) {
     return OK;
 }
 
+byte pull(struct State *state) {
+    byte b = state->memory[state->s];
+    increment_stack_pointer(state);
+    return b;
+}
+
+byte peek(struct State *state) {
+    return state->memory[state->s];
+}
+
 int php(struct State *state) {
     byte status = get_processor_status(state);
     return push(state, status);
@@ -29,7 +46,7 @@ int pha(struct State *state) {
 }
 
 int plp(struct State *state) {
-    byte status = state->memory[state->s];
+    byte status = pull(state);
     state->negative = (status & BIT_7) >> 7;
     state->overflow = (status & BIT_6) >> 6;
     state->brk = (status & BIT_4) >> 4;
@@ -41,13 +58,6 @@ int plp(struct State *state) {
 }
 
 int pla(struct State *state) {
-    state->a = state->memory[state->s];
-    return OK;
-}
-
-int increment_stack_pointer(struct State *state) {
-    byte low = 0x00FF & state->s;
-    struct Result r = add(low, 0x01, 0);
-    state->s = 0x0100 | r.result;
+    state->a = pull(state);
     return OK;
 }

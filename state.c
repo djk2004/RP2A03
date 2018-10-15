@@ -6,7 +6,7 @@ const int OK_IGNORE_CYCLE = 1;
 const int OK_IGNORE_AND_BREAK = 2;
 const int ERROR = -1;
 
-void increment_program_counter(struct State *state) {
+int increment_program_counter(struct State *state) {
     byte low = 0x00FF & state->program_counter;
     struct Result r = add(low, 0x01, 0);
     if (r.carry) {
@@ -17,6 +17,7 @@ void increment_program_counter(struct State *state) {
     } else {
         state->program_counter = (state->program_counter & 0xFF00) | r.result;
     }
+    return OK;
 }
 
 byte get_processor_status(struct State *state) {

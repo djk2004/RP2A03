@@ -26,15 +26,17 @@ int main() {
     state.memory[index++] = 0x88;
     state.memory[index++] = 0x65; // ADC $FF
     state.memory[index++] = 0xFF;
-    state.memory[index++] = 0x30; // BMI $A1
-    // state.memory[index++] = 0x10; // BPL $A1
-    state.memory[index++] = 0xA1;
+    state.memory[index++] = 0x20; // JSR $CDB1
+    state.memory[index++] = 0xB1;
+    state.memory[index++] = 0xCD;
     state.memory[index++] = 0xAA; // TAX
+    state.memory[index++] = 0xCA; // DEX
     state.memory[index++] = 0x02; // UNIMPLEMENTED
 
-    index += 0xA0;
+    index = 0xCDB1;
     state.memory[index++] = 0xA8; // TAY
-    state.memory[index++] = 0x02; // UNIMPLEMENTED
+    state.memory[index++] = 0xC8; // INY
+    state.memory[index++] = 0x60; // RTS
 
     state.program_counter = 0;
     int run_state = 0;

@@ -21,5 +21,7 @@ int plp(struct State *state);
 
 int increment_stack_pointer(struct State *state);
 int push(struct State *state, byte b);
+byte pull(struct State *state);
+byte peek(struct State *state);
 
 #endif

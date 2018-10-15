@@ -21,14 +21,14 @@ int get_low_nibble_address(struct State *state) {
 int get_high_nibble_address(struct State *state) {
     byte b = state->memory[state->program_counter];
     increment_program_counter(state);
-    state->_tmp_address ^= (b << 8);
+    state->_tmp_address |= (b << 8);
     return OK;
 }
 
 int get_high_nibble_address_to_pc(struct State *state) {
     byte b = state->memory[state->program_counter];
     increment_program_counter(state);
-    state->_tmp_address ^= (b << 8);
+    state->_tmp_address |= (b << 8);
     state->program_counter = state->_tmp_address;
     return OK;
 }
@@ -110,13 +110,13 @@ int write_value_to_address(struct State *state) {
     return OK;
 }
 
-int brk_push_pch(struct State *state) {
+int push_pc_high_nibble(struct State *state) {
     state->brk = 1;
     byte pch = (state->program_counter & 0xFF00) >> 8;
     return push(state, pch);
 }
 
-int brk_push_pcl(struct State *state) {
+int push_pc_low_nibble(struct State *state) {
     byte pch = state->program_counter & 0x00FF;
     return push(state, pch);
 }
@@ -130,6 +130,18 @@ int brk_fetch_pcl(struct State *state) {
 int brk_fetch_pch(struct State *state) {
     byte high = state->memory[0xFFFF];
     state->program_counter |= (high << 8);
+    return OK;
+}
+
+int pull_pc_low_nibble(struct State *state) {
+    byte low = pull(state);
+    state->program_counter = low;
+    return OK;
+}
+
+int peek_pc_high_nibble(struct State *state) {
+    byte high = peek(state);
+    state->program_counter |= high << 8;
     return OK;
 }
 
@@ -298,11 +310,31 @@ int pull_from_stack(instructions *ops, int f(struct State *state)) {
 int brk(instructions *ops) {
     int i = 0;
     ops[i++] = get_low_nibble_address;
-    ops[i++] = brk_push_pch;
-    ops[i++] = brk_push_pcl;
+    ops[i++] = push_pc_high_nibble;
+    ops[i++] = push_pc_low_nibble;
     ops[i++] = php;
     ops[i++] = brk_fetch_pcl;
     ops[i++] = brk_fetch_pch;
+    return i;
+}
+
+int jsr(instructions *ops) {
+    int i = 0;
+    ops[i++] = get_low_nibble_address;
+    ops[i++] = nop;
+    ops[i++] = push_pc_high_nibble;
+    ops[i++] = push_pc_low_nibble;
+    ops[i++] = get_high_nibble_address_to_pc;
+    return i;
+}
+
+int rts(instructions *ops) {
+    int i = 0;
+    ops[i++] = get_low_nibble_address;
+    ops[i++] = increment_stack_pointer;
+    ops[i++] = pull_pc_low_nibble;
+    ops[i++] = peek_pc_high_nibble;
+    ops[i++] = increment_program_counter;
     return i;
 }
 
@@ -391,7 +423,7 @@ int get_opcode_instructions(instructions *ops, byte opcode) {
         case 0x1D: { return absolute_x(ops, ora_memory); }
         case 0x1E: { return absolute_x_indexed_read_modify_write(ops, asl_memory); }
         case 0x1F: { return unimplemented(ops); }
-        case 0x20: { return unimplemented(ops); }
+        case 0x20: { return jsr(ops); }
         case 0x21: { return indirect_x(ops, and_memory); }
         case 0x22: { return unimplemented(ops); }
         case 0x23: { return unimplemented(ops); }
@@ -455,7 +487,7 @@ int get_opcode_instructions(instructions *ops, byte opcode) {
         case 0x5D: { return absolute_x(ops, eor_memory); }
         case 0x5E: { return absolute_x_indexed_read_modify_write(ops, lsr_memory); }
         case 0x5F: { return unimplemented(ops); }
-        case 0x60: { return unimplemented(ops); }
+        case 0x60: { return rts(ops); }
         case 0x61: { return indirect_x(ops, adc_memory); }
         case 0x62: { return unimplemented(ops); }
         case 0x63: { return unimplemented(ops); }
