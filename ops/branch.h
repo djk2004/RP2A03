@@ -3,8 +3,6 @@
 
 #include "../state.h"
 
-int nop(struct State *state);
-
 // branch on plus, when negative is clear
 int bpl(struct State *state);
 

@@ -1,11 +1,6 @@
 #include "../state.h"
 #include "../binary.h"
 
-int nop(struct State *state) {
-    // do nothing
-    return OK;
-}
-
 int bpl(struct State *state) {
     state->_tmp_byte = state->negative == 0;
     return OK_IGNORE_CYCLE;

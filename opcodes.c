@@ -133,8 +133,8 @@ int brk_fetch_pch(struct State *state) {
     return OK;
 }
 
-int do_nothing(struct State *state) {
-    // useful for operations that read the next instruction byte and do nothing
+int nop(struct State *state) {
+    // do nothing
     return OK;
 }
 
@@ -193,7 +193,7 @@ int jmp_indirect(instructions *ops) {
     int i = 0;
     ops[i++] = get_low_nibble_address;
     ops[i++] = get_high_nibble_address;
-    ops[i++] = do_nothing;
+    ops[i++] = nop;
     ops[i++] = set_tmp_address_contents_to_pc;
     return i;
 }
@@ -282,14 +282,14 @@ int absolute_x_indexed_read_modify_write(instructions *ops, int f(struct State *
 
 int push_on_stack(instructions *ops, int f(struct State *state)) {
     int i = 0;
-    ops[i++] = do_nothing;
+    ops[i++] = nop;
     ops[i++] = f;
     return i;
 }
 
 int pull_from_stack(instructions *ops, int f(struct State *state)) {
     int i = 0;
-    ops[i++] = do_nothing;
+    ops[i++] = nop;
     ops[i++] = increment_stack_pointer;
     ops[i++] = f;
     return i;
