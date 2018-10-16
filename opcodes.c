@@ -294,14 +294,14 @@ int absolute_x_indexed_read_modify_write(instructions *ops, int f(struct State *
 
 int push_on_stack(instructions *ops, int f(struct State *state)) {
     int i = 0;
-    ops[i++] = nop;
+    ops[i++] = nop; // read next instruction byte (and throw it away)
     ops[i++] = f;
     return i;
 }
 
 int pull_from_stack(instructions *ops, int f(struct State *state)) {
     int i = 0;
-    ops[i++] = nop;
+    ops[i++] = nop; // read next instruction byte (and throw it away)
     ops[i++] = increment_stack_pointer;
     ops[i++] = f;
     return i;
@@ -309,12 +309,22 @@ int pull_from_stack(instructions *ops, int f(struct State *state)) {
 
 int brk(instructions *ops) {
     int i = 0;
-    ops[i++] = get_low_nibble_address;
+    ops[i++] = nop;  // read next instruction byte (and throw it away)
     ops[i++] = push_pc_high_nibble;
     ops[i++] = push_pc_low_nibble;
     ops[i++] = php;
     ops[i++] = brk_fetch_pcl;
     ops[i++] = brk_fetch_pch;
+    return i;
+}
+
+int rti(instructions *ops) {
+    int i = 0;
+    ops[i++] = nop;  // read next instruction byte (and throw it away)
+    ops[i++] = increment_stack_pointer;
+    ops[i++] = plp;
+    ops[i++] = pull_pc_low_nibble;
+    ops[i++] = peek_pc_high_nibble;
     return i;
 }
 
@@ -330,7 +340,7 @@ int jsr(instructions *ops) {
 
 int rts(instructions *ops) {
     int i = 0;
-    ops[i++] = get_low_nibble_address;
+    ops[i++] = nop;  // read next instruction byte (and throw it away)
     ops[i++] = increment_stack_pointer;
     ops[i++] = pull_pc_low_nibble;
     ops[i++] = peek_pc_high_nibble;
@@ -455,7 +465,7 @@ int get_opcode_instructions(instructions *ops, byte opcode) {
         case 0x3D: { return absolute_x(ops, and_memory); }
         case 0x3E: { return absolute_x_indexed_read_modify_write(ops, rol_memory); }
         case 0x3F: { return unimplemented(ops); }
-        case 0x40: { return unimplemented(ops); }
+        case 0x40: { return rti(ops); }
         case 0x41: { return indirect_x(ops, eor_memory); }
         case 0x42: { return unimplemented(ops); }
         case 0x43: { return unimplemented(ops); }
