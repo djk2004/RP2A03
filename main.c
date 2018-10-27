@@ -5,7 +5,12 @@
 
 const int MAX_MEMORY_BYTES = 65536;
 
-int main() {
+int main(int argc, char **argv) {
+    if (argc < 2) {
+        printf("Missing filename\n");
+        return -1;
+    }
+
     struct State state = { 
         .memory = (byte*)calloc(MAX_MEMORY_BYTES, sizeof(byte)),
         .program_counter = 0,
@@ -17,26 +22,25 @@ int main() {
         .brk = 1
     };
 
-    // program
+    // read program
     int index = 0;
-
-    state.memory[0x00FF] = 0x01;
-
-    state.memory[index++] = 0xA9; // LDA $#88
-    state.memory[index++] = 0x88;
-    state.memory[index++] = 0x65; // ADC $FF
-    state.memory[index++] = 0xFF;
-    state.memory[index++] = 0x20; // JSR $CDB1
-    state.memory[index++] = 0xB1;
-    state.memory[index++] = 0xCD;
-    state.memory[index++] = 0xAA; // TAX
-    state.memory[index++] = 0xCA; // DEX
-    state.memory[index++] = 0x02; // UNIMPLEMENTED
-
-    index = 0xCDB1;
-    state.memory[index++] = 0xA8; // TAY
-    state.memory[index++] = 0xC8; // INY
-    state.memory[index++] = 0x60; // RTS
+    FILE *file = fopen(argv[1], "r");
+    if (file) {
+        char* line = (char*)malloc(1024 * sizeof(char));
+        unsigned int* opcode = (unsigned int*)malloc(sizeof(unsigned int));
+        size_t length;
+        while (getline(&line, &length, file) != EOF) {
+            sscanf(line, "%02X", opcode);
+            state.memory[index++] = *opcode;
+        }
+        fclose(file);
+        free(line);
+        free(opcode);
+    }
+    else {
+        printf("Invalid filename %s\n", argv[1]);
+        return -1;
+    }
 
     state.program_counter = 0;
     int run_state = 0;
