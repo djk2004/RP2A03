@@ -33,6 +33,7 @@ int main(int argc, char **argv) {
             sscanf(line, "%02X", opcode);
             state.memory[index++] = *opcode;
         }
+        state.memory[index] = 0xFF;  // HACK: unused opcode
         fclose(file);
         free(line);
         free(opcode);
